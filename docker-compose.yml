@@ -1,27 +1,28 @@
-version: '3.8'
-
 services:
   rasa:
-    dockerfile:
-      context: .
-      dockerfile: retailGPT/Dockerfile.rasa
+    build:
+      context: ./retailGPT
+      dockerfile: Dockerfile.rasa
     restart: unless-stopped
 
   actions:
-    dockerfile:
-      context: .
-      dockerfile: retailGPT/Dockerfile.actions
+    volumes:
+      - ./retailGPT/datasets:/datasets:ro
+
+    build:
+      context: ./retailGPT
+      dockerfile: Dockerfile.actions
     environment:
       - AZURE_OPENAI_API_KEY
-      - AZURE_API_KEY 
-      - OPENAI_API_KEY 
+      - AZURE_API_KEY
+      - OPENAI_API_KEY
       - AZURE_LANGUAGE_KEY
     restart: unless-stopped
 
   demo:
-    dockerfile:
-      context: .
-      dockerfile: chat_interface/Dockerfile
+    build:
+      context: ./chat_interface
+      dockerfile: Dockerfile
     ports:
       - "8501:8501"
     restart: unless-stopped

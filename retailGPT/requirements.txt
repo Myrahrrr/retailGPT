@@ -1,0 +1,9 @@
+aiohttp
+redis
+requests
+openai
+python-dotenv
+colorama
+pandas
+numpy
+scikit-learn

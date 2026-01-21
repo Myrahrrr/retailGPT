@@ -6,7 +6,7 @@ import redis
 class Database:
     """Class that handles the interaction with the database."""
 
-    _redis = redis.Redis(host="localhost", port=6379, decode_responses=True)
+    _redis = redis.Redis(host="database", port=6379, decode_responses=True)
 
     @staticmethod
     def set_data(user_id: str, data: dict) -> None:

@@ -8,6 +8,8 @@ USER root
 RUN pip install poetry==1.7.1 && \
     poetry install --without dev
 RUN python -m spacy download en_core_web_lg
+RUN pip install "packaging<22"
+
 RUN rasa train
 
 USER 1001
