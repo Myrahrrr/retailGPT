@@ -5,9 +5,13 @@ WORKDIR /app
 COPY ./rasa_chatbot /app
 
 USER root
-RUN pip install poetry==1.7.1 && \
-    poetry install --without dev
-RUN python -m spacy download en_core_web_lg
+RUN pip install --upgrade pip && \
+    pip install poetry==1.7.1 --no-cache-dir && \
+    poetry config virtualenvs.create false && \
+    poetry install --without dev --no-interaction
+
+RUN pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_lg-3.7.1/en_core_web_lg-3.7.1-py3-none-any.whl --retries 5 --timeout 300
+
 RUN rasa train
 
 USER 1001
