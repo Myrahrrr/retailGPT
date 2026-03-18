@@ -1,0 +1,124 @@
+{
+  "products": [
+    {
+      "row_id": 1,
+      "product_name": "Voltaren Gel 1% 100g",
+      "product_volume_in_hectoliters": 0.001,
+      "full_price": 8.99,
+      "category": "gel topique",
+      "substance_active": "Diclofénac",
+      "forme": "Gel à appliquer localement",
+      "posologie": "Appliquer 3 à 4 fois par jour sur la zone douloureuse",
+      "contre_indications": "Allergie aux AINS, plaie ouverte, grossesse (3e trimestre)",
+      "conseil": "Laver les mains après application. Ne pas appliquer sous bandage occlusif."
+    },
+    {
+      "row_id": 2,
+      "product_name": "Ibuprofène 400mg 20 comprimés",
+      "product_volume_in_hectoliters": 0.0005,
+      "full_price": 4.99,
+      "category": "anti-inflammatoire oral",
+      "substance_active": "Ibuprofène",
+      "forme": "Comprimés à avaler",
+      "posologie": "1 comprimé toutes les 6 heures avec un repas. Maximum 3 par jour.",
+      "contre_indications": "Ulcère gastrique, insuffisance rénale, grossesse, allergie aux AINS",
+      "conseil": "Toujours prendre avec de la nourriture pour protéger l'estomac."
+    },
+    {
+      "row_id": 3,
+      "product_name": "Naproxène 250mg 12 comprimés",
+      "product_volume_in_hectoliters": 0.0005,
+      "full_price": 5.49,
+      "category": "anti-inflammatoire oral",
+      "substance_active": "Naproxène",
+      "forme": "Comprimés à avaler",
+      "posologie": "1 comprimé matin et soir avec un repas. Maximum 2 par jour.",
+      "contre_indications": "Ulcère gastrique, insuffisance rénale, grossesse, allergie aux AINS",
+      "conseil": "Durée d'action plus longue que l'ibuprofène. Prendre avec un repas."
+    },
+    {
+      "row_id": 4,
+      "product_name": "Feldène Gel 0.5% 60g",
+      "product_volume_in_hectoliters": 0.001,
+      "full_price": 7.49,
+      "category": "gel topique",
+      "substance_active": "Piroxicam",
+      "forme": "Gel à appliquer localement",
+      "posologie": "Appliquer 2 à 3 fois par jour sur la zone douloureuse",
+      "contre_indications": "Allergie aux AINS, grossesse, enfants de moins de 15 ans",
+      "conseil": "Éviter l'exposition au soleil sur la zone traitée."
+    },
+    {
+      "row_id": 5,
+      "product_name": "Patch chauffant Thermacare Genou",
+      "product_volume_in_hectoliters": 0.001,
+      "full_price": 6.99,
+      "category": "patch chauffant",
+      "substance_active": "Chaleur thérapeutique",
+      "forme": "Patch à appliquer directement sur le genou",
+      "posologie": "1 patch pendant 8 heures maximum. Ne pas dépasser 1 par jour.",
+      "contre_indications": "Peau abîmée, diabète avec neuropathie, troubles de la sensibilité",
+      "conseil": "Ne pas utiliser pendant le sommeil. Vérifier régulièrement la peau."
+    },
+    {
+      "row_id": 6,
+      "product_name": "Glucosamine 1500mg 30 comprimés",
+      "product_volume_in_hectoliters": 0.0005,
+      "full_price": 12.99,
+      "category": "complément articulaire",
+      "substance_active": "Glucosamine sulfate",
+      "forme": "Comprimés à avaler",
+      "posologie": "1 comprimé par jour avec un repas. Cure de 3 mois recommandée.",
+      "contre_indications": "Allergie aux crustacés, diabète (surveiller la glycémie)",
+      "conseil": "Traitement de fond pour l'arthrose. Effets visibles après 4 à 8 semaines."
+    },
+    {
+      "row_id": 7,
+      "product_name": "Chondroïtine 400mg 60 gélules",
+      "product_volume_in_hectoliters": 0.001,
+      "full_price": 14.99,
+      "category": "complément articulaire",
+      "substance_active": "Chondroïtine sulfate",
+      "forme": "Gélules à avaler",
+      "posologie": "2 gélules par jour avec un repas.",
+      "contre_indications": "Anticoagulants (surveiller), grossesse",
+      "conseil": "Souvent associé à la glucosamine pour un effet renforcé."
+    },
+    {
+      "row_id": 8,
+      "product_name": "Ibuprofène Gel 5% 100g",
+      "product_volume_in_hectoliters": 0.001,
+      "full_price": 6.49,
+      "category": "gel topique",
+      "substance_active": "Ibuprofène",
+      "forme": "Gel à appliquer localement",
+      "posologie": "Appliquer 3 fois par jour sur la zone douloureuse",
+      "contre_indications": "Allergie aux AINS, plaie ouverte, grossesse (3e trimestre)",
+      "conseil": "Masser doucement jusqu'à absorption complète."
+    },
+    {
+      "row_id": 9,
+      "product_name": "Baume du Tigre Rouge 30g",
+      "product_volume_in_hectoliters": 0.0003,
+      "full_price": 9.99,
+      "category": "baume topique",
+      "substance_active": "Camphre, Menthol, Huile de clou de girofle",
+      "forme": "Baume à appliquer localement",
+      "posologie": "Masser 2 à 3 fois par jour sur la zone douloureuse",
+      "contre_indications": "Enfants de moins de 7 ans, peau abîmée, allergie au camphre",
+      "conseil": "Éviter le contact avec les yeux et les muqueuses."
+    },
+    {
+      "row_id": 10,
+      "product_name": "Omega-3 Articulations 60 gélules",
+      "product_volume_in_hectoliters": 0.001,
+      "full_price": 16.99,
+      "category": "complément articulaire",
+      "substance_active": "Oméga-3, Vitamine D, Calcium",
+      "forme": "Gélules à avaler",
+      "posologie": "2 gélules par jour avec un repas.",
+      "contre_indications": "Anticoagulants (surveiller)",
+      "conseil": "Complément alimentaire pour le maintien des articulations."
+    }
+  ]
+}

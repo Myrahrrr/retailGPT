@@ -1,0 +1,114 @@
+{
+  "snacks": {
+    "machine_like": {
+      "dialogue": [
+        "U: Je cherche des snacks pour une soirée.",
+        "B: Catégorie détectée : snacks soirée. Budget requis.",
+        "U: Environ 20 euros.",
+        "B: Budget enregistré. Préférence : sucré, salé ou les deux ?",
+        "U: Les deux.",
+        "B: Options disponibles identifiées. Sélection en cours.",
+        "U: Vous avez des chips ?",
+        "B: Recherche en cours. Résultats disponibles.",
+        "U: Et des biscuits sucrés ?",
+        "B: Requête traitée. Produits correspondants trouvés.",
+        "U: Je vais prendre des chips et des cookies.",
+        "B: Produits sélectionnés. Ajout au panier confirmé.",
+        "U: C'est bon pour moi.",
+        "B: Commande enregistrée. Opération terminée."
+      ]
+    },
+    "human_like_formal": {
+      "dialogue": [
+        "U: Je cherche des snacks pour une soirée.",
+        "B: Bien sûr, je serais ravi de vous aider. Quel est votre budget ?",
+        "U: Environ 20 euros.",
+        "B: Très bien. Avez-vous une préférence entre le sucré et le salé ?",
+        "U: Les deux.",
+        "B: Parfait. Permettez-moi de vous proposer une sélection adaptée.",
+        "U: Vous avez des chips ?",
+        "B: Certainement, je vais vérifier les options disponibles pour vous.",
+        "U: Et des biscuits sucrés ?",
+        "B: Bien sûr, nous avons plusieurs références qui pourraient vous convenir.",
+        "U: Je vais prendre des chips et des cookies.",
+        "B: Excellent choix. Je les ai ajoutés à votre panier.",
+        "U: C'est bon pour moi.",
+        "B: Très bien. Votre sélection est prête. N'hésitez pas si vous souhaitez ajouter autre chose."
+      ]
+    },
+    "human_like_friendly": {
+      "dialogue": [
+        "U: Je cherche des snacks pour une soirée.",
+        "B: Super, une soirée ! Tu attends combien de personnes à peu près ?",
+        "U: Environ 20 euros de budget.",
+        "B: Pas de souci, on va trouver quelque chose de bien ! Plutôt sucré, salé ou un mix des deux ?",
+        "U: Les deux.",
+        "B: J'adore, le mix c'est toujours la meilleure idée pour une soirée !",
+        "U: Vous avez des chips ?",
+        "B: Bien sûr, j'ai plusieurs options sympa pour toi !",
+        "U: Et des biscuits sucrés ?",
+        "B: Oui aussi ! On va te faire un super panier soirée !",
+        "U: Je vais prendre des chips et des cookies.",
+        "B: Top choix ! Je les ajoute tout de suite dans ton panier !",
+        "U: C'est bon pour moi.",
+        "B: Parfait, bonne soirée à toi et tes amis !"
+      ]
+    }
+  },
+  "medicaments": {
+    "machine_like": {
+      "dialogue": [
+        "U: J'ai des douleurs au genou depuis plusieurs jours.",
+        "B: Symptôme enregistré : douleur genou. Durée exacte requise.",
+        "U: Depuis 4 jours environ.",
+        "B: Durée : 4 jours. Allergies médicamenteuses connues ?",
+        "U: Aucune allergie.",
+        "B: Absence d'allergie confirmée. Autres médicaments en cours ?",
+        "U: Non, aucun.",
+        "B: Absence de traitement en cours confirmée. Recommandation : gel topique ou anti-inflammatoire oral.",
+        "U: Qu'est-ce que vous recommandez comme gel ?",
+        "B: Recherche en cours. Produits correspondants identifiés.",
+        "U: Je vais prendre le gel.",
+        "B: Produit sélectionné. Ajout au panier confirmé.",
+        "U: Merci.",
+        "B: Opération terminée. Consulter un pharmacien si symptômes persistent au-delà de 3 jours."
+      ]
+    },
+    "human_like_formal": {
+      "dialogue": [
+        "U: J'ai des douleurs au genou depuis plusieurs jours.",
+        "B: Je suis désolé d'apprendre cela. Depuis combien de jours exactement ressentez-vous cette douleur ?",
+        "U: Depuis 4 jours environ.",
+        "B: Merci. Avez-vous des allergies médicamenteuses connues ?",
+        "U: Aucune allergie.",
+        "B: Parfait. Prenez-vous actuellement d'autres médicaments ?",
+        "U: Non, aucun.",
+        "B: Très bien. Dans ce cas, je peux vous proposer un gel anti-inflammatoire à appliquer localement ou des comprimés selon votre préférence.",
+        "U: Qu'est-ce que vous recommandez comme gel ?",
+        "B: Je vais vérifier les options disponibles pour vous.",
+        "U: Je vais prendre le gel.",
+        "B: Excellent choix. Je l'ai ajouté à votre panier.",
+        "U: Merci.",
+        "B: Je vous en prie. Si les douleurs persistent au-delà de 3 jours, je vous recommande de consulter un pharmacien."
+      ]
+    },
+    "human_like_friendly": {
+      "dialogue": [
+        "U: J'ai des douleurs au genou depuis plusieurs jours.",
+        "B: Aïe, ça doit être vraiment gênant ! Ça dure depuis combien de temps exactement ?",
+        "U: Depuis 4 jours environ.",
+        "B: 4 jours c'est long, on va trouver quelque chose pour t'aider ! Tu as des allergies aux médicaments ?",
+        "U: Aucune allergie.",
+        "B: Ok super ! Et tu prends d'autres médicaments en ce moment ?",
+        "U: Non, aucun.",
+        "B: Parfait ! Alors j'ai de bonnes options pour toi, soit un gel à appliquer directement sur le genou, soit des comprimés anti-inflammatoires.",
+        "U: Qu'est-ce que vous recommandez comme gel ?",
+        "B: Bonne idée le gel, ça agit directement là où ça fait mal ! Laisse-moi vérifier ce qu'on a.",
+        "U: Je vais prendre le gel.",
+        "B: Top ! Je l'ajoute dans ton panier !",
+        "U: Merci.",
+        "B: Avec plaisir ! Si ça ne va pas mieux d'ici quelques jours, n'hésite pas à consulter un pharmacien !"
+      ]
+    }
+  }
+}
