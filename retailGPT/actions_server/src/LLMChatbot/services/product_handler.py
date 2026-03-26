@@ -31,14 +31,16 @@ class ProductHandler:
         """Returns the correct catalog path based on the product type.
 
         Args:
-            produit: Product type — 'snacks' or 'medicaments'
+            produit: Product type — 'snacks', 'epicerie' or 'medicaments'
 
         Returns:
             Path to the corresponding JSON catalog.
         """
         if produit == "medicaments":
             return _DATASETS_PATH / "medicaments_products.json"
-        return _DATASETS_PATH / "snacks_products.json"
+        if produit in ("snacks", "epicerie"):
+            return _DATASETS_PATH / "epicerie_products.json"
+        return _DATASETS_PATH / "epicerie_products.json"
 
     @staticmethod
     def _get_product_catalog(produit: str) -> str:
@@ -61,7 +63,41 @@ class ProductHandler:
                 for product in products:
                     name = product["product_name"]
                     unit_price = round(product["full_price"], 2)
-                    catalog_string += f"Nom: {name} - Prix: {unit_price}€\n"
+                    line = f"Nom: {name} - Prix: {unit_price}€"
+                    # Attributs médicaments
+                    if "active_ingredient" in product:
+                        line += f" - Principe actif: {product['active_ingredient']}"
+                    if "mechanism" in product:
+                        line += f" - Mécanisme: {product['mechanism']}"
+                    if "indication" in product:
+                        line += f" - Indication: {product['indication']}"
+                    if "dosage" in product:
+                        line += f" - Posologie: {product['dosage']}"
+                    if "frequence" in product:
+                        line += f" - Fréquence: {product['frequence']}"
+                    if "duree_max" in product:
+                        line += f" - Durée max: {product['duree_max']}"
+                    if "dose_max_jour" in product:
+                        line += f" - Dose max/jour: {product['dose_max_jour']}"
+                    if "aspirine_compatible" in product:
+                        compat = "Oui" if product["aspirine_compatible"] else "NON - CONTRE-INDIQUÉ"
+                        line += f" - Compatible Aspirine: {compat}"
+                    if "interactions" in product:
+                        line += f" - Interactions: {product['interactions']}"
+                    if "niveau_risque" in product:
+                        line += f" - Niveau risque: {product['niveau_risque']}"
+                    # Attributs épicerie
+                    if "sous_categorie" in product:
+                        line += f" - Sous-catégorie: {product['sous_categorie']}"
+                    if "portions_estimees" in product:
+                        line += f" - Portions estimées: {product['portions_estimees']}"
+                    if "usage" in product:
+                        line += f" - Usage: {product['usage']}"
+                    if "description" in product:
+                        line += f" - Description: {product['description']}"
+                    if "type" in product:
+                        line += f" - Type: {product['type']}"
+                    catalog_string += line + "\n"
         except FileNotFoundError:
             print(f"Catalog file not found: {catalog_path}")
 
@@ -142,9 +178,15 @@ class ProductHandler:
 
     @staticmethod
     def _get_product_data(user_id: str, product_name: str) -> dict | None:
-        """Gets product data by name from user recommendations."""
+        """Gets product data by name from user recommendations.
+        Uses partial matching to handle abbreviated or approximate names from the LLM.
+        """
+        name_user = product_name.lower().strip()
         for product in ProductHandler._get_recommendations_data(user_id):
-            if product["product_name"].lower() == product_name.lower():
+            name_db = product["product_name"].lower().strip()
+            if name_user == name_db:
+                return product
+            if name_user in name_db or name_db in name_user:
                 return product
         return None
 

@@ -2,6 +2,11 @@ version: "3.1"
 
 rules:
 
+  - rule: Répondre à la salutation
+    steps:
+    - intent: greet
+    - action: utter_greet
+
   - rule: Répondre si l'utilisateur demande si c'est un bot
     steps:
     - intent: bot_challenge

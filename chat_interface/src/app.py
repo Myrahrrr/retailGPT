@@ -25,9 +25,9 @@ footer {visibility: hidden;}
 # CONDITIONS EXPÉRIMENTALES — ROUND-ROBIN
 # ─────────────────────────────────────────────
 CONDITIONS = [
-    {"style": "machine_like",        "produit": "snacks"},
-    {"style": "human_like_formal",   "produit": "snacks"},
-    {"style": "human_like_friendly", "produit": "snacks"},
+    {"style": "machine_like",        "produit": "epicerie"},
+    {"style": "human_like_formal",   "produit": "epicerie"},
+    {"style": "human_like_friendly", "produit": "epicerie"},
     {"style": "machine_like",        "produit": "medicaments"},
     {"style": "human_like_formal",   "produit": "medicaments"},
     {"style": "human_like_friendly", "produit": "medicaments"},
@@ -37,19 +37,24 @@ MISSIONS = {
     "medicaments": {
         "titre": "🏥 Votre mission",
         "texte": (
-            "Vous ressentez une forte douleur articulaire au genou depuis plusieurs jours "
-            "et vous avez besoin de trouver rapidement un médicament pour la soulager.\n\n"
-            "**Utilisez le chatbot afin de trouver un produit adapté à votre situation "
-            "et de l'ajouter à votre panier.**"
+            "Votre amie Julie, 45 ans, souffre de douleurs articulaires au genou droit "
+            "depuis 4 jours avec des raideurs le matin. "
+            "Elle prend de l'Aspirine 100mg tous les jours pour protéger son cœur "
+            "et ne peut pas consulter un médecin avant 2 semaines.\n\n"
+            "**Utilisez le chatbot pour trouver un médicament sans ordonnance "
+            "adapté à sa situation et compatible avec son traitement, "
+            "et l'ajouter au panier.**"
         ),
     },
-    "snacks": {
-        "titre": "🛒 Votre mission",
+    "epicerie": {
+        "titre": "🍽️ Votre mission",
         "texte": (
-            "Vous organisez une soirée chez vous ce week-end avec des amis "
-            "et vous souhaitez commander des snacks et des boissons en ligne.\n\n"
-            "**Utilisez le chatbot afin de trouver des produits qui vous conviennent "
-            "et de les ajouter à votre panier.**"
+            "Vous organisez une soirée conviviale chez vous pour 12 personnes ce week-end. "
+            "Vous souhaitez préparer un repas maison complet : apéro, plat et dessert, "
+            "pour un budget total de 80 euros.\n\n"
+            "**Utilisez le chatbot pour planifier votre menu, "
+            "trouver les produits adaptés dans le catalogue "
+            "et les ajouter à votre panier.**"
         ),
     },
 }
@@ -116,6 +121,7 @@ def init_db():
             style TEXT,
             produit TEXT,
             count INTEGER DEFAULT 0,
+            completed INTEGER DEFAULT 0,
             PRIMARY KEY (style, produit)
         )
     """)
@@ -160,7 +166,7 @@ def assign_condition() -> dict:
     c = conn.cursor()
     c.execute("""
         SELECT style, produit FROM condition_counts
-        ORDER BY count ASC, style ASC
+        ORDER BY completed ASC, count ASC, style ASC
         LIMIT 1
     """)
     row = c.fetchone()
@@ -175,6 +181,18 @@ def increment_condition_count(style: str, produit: str):
     c = conn.cursor()
     c.execute("""
         UPDATE condition_counts SET count = count + 1
+        WHERE style = ? AND produit = ?
+    """, (style, produit))
+    conn.commit()
+    conn.close()
+
+
+def increment_completed_count(style: str, produit: str):
+    """Incremente le compteur de completions quand le questionnaire est soumis."""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("""
+        UPDATE condition_counts SET completed = completed + 1
         WHERE style = ? AND produit = ?
     """, (style, produit))
     conn.commit()
@@ -238,6 +256,18 @@ def save_questionnaire(conversation_id: str, reponses: dict):
     ))
     conn.commit()
     conn.close()
+
+    # Incrementer le compteur de completions pour le round-robin
+    try:
+        p_conn = sqlite3.connect(DB_PATH)
+        pc = p_conn.cursor()
+        pc.execute("SELECT style, produit FROM participants WHERE conversation_id = ?", (conversation_id,))
+        row = pc.fetchone()
+        p_conn.close()
+        if row:
+            increment_completed_count(row[0], row[1])
+    except Exception as e:
+        print(f"Error incrementing completed count: {e}")
 
 
 # ─────────────────────────────────────────────
@@ -396,8 +426,8 @@ def show_mission():
     st.divider()
 
     condition = st.session_state.get("condition", {})
-    produit = condition.get("produit", "snacks")
-    mission = MISSIONS.get(produit, MISSIONS["snacks"])
+    produit = condition.get("produit", "epicerie")
+    mission = MISSIONS.get(produit, MISSIONS["epicerie"])
 
     st.markdown(f"## {mission['titre']}")
     st.info(mission["texte"])
@@ -416,8 +446,8 @@ def show_chat():
     st.title("💬 Assistant en ligne")
 
     condition = st.session_state.get("condition", {})
-    produit = condition.get("produit", "snacks")
-    mission = MISSIONS.get(produit, MISSIONS["snacks"])
+    produit = condition.get("produit", "epicerie")
+    mission = MISSIONS.get(produit, MISSIONS["epicerie"])
     with st.expander("📋 Rappel de votre mission", expanded=False):
         st.write(mission["texte"])
 

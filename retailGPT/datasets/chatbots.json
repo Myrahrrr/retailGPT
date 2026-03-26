@@ -2,112 +2,88 @@
   "snacks": {
     "machine_like": {
       "dialogue": [
-        "U: Je cherche des snacks pour une soirée.",
-        "B: Catégorie détectée : snacks soirée. Budget requis.",
-        "U: Environ 20 euros.",
-        "B: Budget enregistré. Préférence : sucré, salé ou les deux ?",
-        "U: Les deux.",
-        "B: Options disponibles identifiées. Sélection en cours.",
-        "U: Vous avez des chips ?",
-        "B: Recherche en cours. Résultats disponibles.",
-        "U: Et des biscuits sucrés ?",
-        "B: Requête traitée. Produits correspondants trouvés.",
-        "U: Je vais prendre des chips et des cookies.",
-        "B: Produits sélectionnés. Ajout au panier confirmé.",
-        "U: C'est bon pour moi.",
-        "B: Commande enregistrée. Opération terminée."
+        "U: J'organise une soirée pour 12 personnes avec 50 euros de budget.",
+        "B: Paramètres : 12 personnes, budget 50€. Calcul apéro/plat/dessert en cours.",
+        "U: Oui, cuisine maison.",
+        "B: Plan recommandé — Apéro 15€ : Saucisson 3.99€, Camembert 3.29€, Crackers 2.19€, Olives 2.49€, Baguettes x2 2.49€. Plat 20€ : Pâtes 500g x3 4.47€, Viande hachée x2 11.98€, Sauce tomate 2.29€. Dessert 10€ : Profiteroles x2 13.98€. Total estimé : 47.17€. Validation requise.",
+        "U: C'est bien, ajoutez l'apéro.",
+        "B: Saucisson ajouté. Camembert ajouté. Crackers ajouté. Olives ajoutées. Baguettes x2 ajoutées. Total apéro : 14.45€. Plat suivant ?",
+        "U: Ajoutez le plat.",
+        "B: Pâtes x3 ajoutées. Viande hachée x2 ajoutée. Sauce tomate ajoutée. Total plat : 18.74€. Dessert suivant ?",
+        "U: Ajoutez les profiteroles.",
+        "B: Profiteroles x2 ajoutées. Total commande : 33.19€. Budget restant : 16.81€."
       ]
     },
     "human_like_formal": {
       "dialogue": [
-        "U: Je cherche des snacks pour une soirée.",
-        "B: Bien sûr, je serais ravi de vous aider. Quel est votre budget ?",
-        "U: Environ 20 euros.",
-        "B: Très bien. Avez-vous une préférence entre le sucré et le salé ?",
-        "U: Les deux.",
-        "B: Parfait. Permettez-moi de vous proposer une sélection adaptée.",
-        "U: Vous avez des chips ?",
-        "B: Certainement, je vais vérifier les options disponibles pour vous.",
-        "U: Et des biscuits sucrés ?",
-        "B: Bien sûr, nous avons plusieurs références qui pourraient vous convenir.",
-        "U: Je vais prendre des chips et des cookies.",
-        "B: Excellent choix. Je les ai ajoutés à votre panier.",
-        "U: C'est bon pour moi.",
-        "B: Très bien. Votre sélection est prête. N'hésitez pas si vous souhaitez ajouter autre chose."
+        "U: J'organise une soirée pour 12 personnes avec 50 euros de budget.",
+        "B: Bien sûr, je vais vous préparer un plan de repas complet et équilibré pour 12 personnes.",
+        "U: Oui, cuisine maison.",
+        "B: Pour votre soirée, je vous recommande un apéro à 14.45€ avec saucisson, camembert, crackers et olives — un plateau convivial qui plaira à tous. Pour le plat, une bolognaise maison à 18.74€ est idéale : économique, généreuse et appréciée de tous. En dessert, des profiteroles à 13.98€ pour une touche festive. Total estimé : 47.17€ sur 50€.",
+        "U: C'est bien, ajoutez l'apéro.",
+        "B: Parfait. J'ai ajouté le saucisson, le camembert, les crackers, les olives et les baguettes à votre panier — soit 14.45€. Souhaitez-vous que je passe au plat ?",
+        "U: Ajoutez le plat.",
+        "B: J'ai ajouté les pâtes, la viande hachée et la sauce tomate pour votre bolognaise — 18.74€. Votre budget restant pour le dessert est de 16.81€.",
+        "U: Ajoutez les profiteroles.",
+        "B: Excellent choix. Les profiteroles sont ajoutées. Total de votre commande : 33.19€ — vous avez une belle marge si vous souhaitez ajouter des boissons."
       ]
     },
     "human_like_friendly": {
       "dialogue": [
-        "U: Je cherche des snacks pour une soirée.",
-        "B: Super, une soirée ! Tu attends combien de personnes à peu près ?",
-        "U: Environ 20 euros de budget.",
-        "B: Pas de souci, on va trouver quelque chose de bien ! Plutôt sucré, salé ou un mix des deux ?",
-        "U: Les deux.",
-        "B: J'adore, le mix c'est toujours la meilleure idée pour une soirée !",
-        "U: Vous avez des chips ?",
-        "B: Bien sûr, j'ai plusieurs options sympa pour toi !",
-        "U: Et des biscuits sucrés ?",
-        "B: Oui aussi ! On va te faire un super panier soirée !",
-        "U: Je vais prendre des chips et des cookies.",
-        "B: Top choix ! Je les ajoute tout de suite dans ton panier !",
-        "U: C'est bon pour moi.",
-        "B: Parfait, bonne soirée à toi et tes amis !"
+        "U: J'organise une soirée pour 12 personnes avec 50 euros de budget.",
+        "B: Super, une soirée pour 12 ! Je vais te concocter un plan de repas parfait dans ton budget !",
+        "U: Oui, cuisine maison.",
+        "B: J'ai tout calculé pour toi ! Pour l'apéro un plateau saucisson-camembert-olives-crackers à 14.45€ — c'est convivial et tout le monde adore ! Pour le plat, une bolognaise maison à 18.74€ — économique, copieuse et délicieuse pour 12 personnes ! Et en dessert des profiteroles à 13.98€ pour finir en beauté. Total : 47.17€, tu es dans le budget !",
+        "U: C'est bien, ajoutez l'apéro.",
+        "B: Top ! Saucisson, camembert, crackers, olives et baguettes sont dans ton panier — 14.45€, vos invités vont adorer ! On passe au plat ?",
+        "U: Ajoutez le plat.",
+        "B: Parfait ! Pâtes, viande hachée et sauce tomate ajoutés pour ta bolognaise — 18.74€, et il te reste encore 16.81€ pour le dessert et les boissons !",
+        "U: Ajoutez les profiteroles.",
+        "B: Excellent choix, les profiteroles c'est toujours une réussite ! Total : 33.19€ — tu as même de la marge pour prendre du vin ou des boissons, quelle soirée ce sera !"
       ]
     }
   },
   "medicaments": {
     "machine_like": {
       "dialogue": [
-        "U: J'ai des douleurs au genou depuis plusieurs jours.",
-        "B: Symptôme enregistré : douleur genou. Durée exacte requise.",
-        "U: Depuis 4 jours environ.",
-        "B: Durée : 4 jours. Allergies médicamenteuses connues ?",
-        "U: Aucune allergie.",
-        "B: Absence d'allergie confirmée. Autres médicaments en cours ?",
-        "U: Non, aucun.",
-        "B: Absence de traitement en cours confirmée. Recommandation : gel topique ou anti-inflammatoire oral.",
-        "U: Qu'est-ce que vous recommandez comme gel ?",
-        "B: Recherche en cours. Produits correspondants identifiés.",
-        "U: Je vais prendre le gel.",
-        "B: Produit sélectionné. Ajout au panier confirmé.",
-        "U: Merci.",
-        "B: Opération terminée. Consulter un pharmacien si symptômes persistent au-delà de 3 jours."
+        "U: Mon amie Julie souffre de douleurs au genou depuis 4 jours et prend de l'Aspirine 100mg pour le cœur.",
+        "B: Symptômes : douleur genou 4 jours. Traitement en cours : Aspirine 100mg cardioprotection. Vérification compatibilité en cours.",
+        "U: Elle a aussi des raideurs le matin. Pas d'autres allergies.",
+        "B: Analyse : Ibuprofène et Naproxène comprimés CONTRE-INDIQUÉS avec Aspirine 100mg — risque hémorragique. Recommandation compatible : Paracétamol 500mg 3.49€ — antalgique, aucune interaction avec Aspirine. Posologie : 1 à 2 comprimés toutes les 6h, max 8/jour, durée max 5 jours. Alternative topique : Patch Thermacare 8.99€ — aucune interaction.",
+        "U: Pourquoi pas l'Ibuprofène ?",
+        "B: Contre-indication confirmée : Ibuprofène = AINS oral. Association Ibuprofène + Aspirine = potentialisation anticoagulante = risque hémorragique grave. Paracétamol = mécanisme différent, aucune interaction. Recommandation maintenue.",
+        "U: Je vais prendre le Paracétamol.",
+        "B: Paracétamol 500mg 20 comprimés ajouté. Posologie rappel : 1 à 2 comprimés/6h, max 8/jour, 5 jours max. Consulter pharmacien avant prise — traitement cardiaque en cours.",
+        "U: Et le patch aussi.",
+        "B: Patch Thermacare Genou ajouté. Aucune interaction. Application : 1 patch/jour, 8h maximum. Consulter médecin si symptômes persistent au-delà de 3 jours."
       ]
     },
     "human_like_formal": {
       "dialogue": [
-        "U: J'ai des douleurs au genou depuis plusieurs jours.",
-        "B: Je suis désolé d'apprendre cela. Depuis combien de jours exactement ressentez-vous cette douleur ?",
-        "U: Depuis 4 jours environ.",
-        "B: Merci. Avez-vous des allergies médicamenteuses connues ?",
-        "U: Aucune allergie.",
-        "B: Parfait. Prenez-vous actuellement d'autres médicaments ?",
-        "U: Non, aucun.",
-        "B: Très bien. Dans ce cas, je peux vous proposer un gel anti-inflammatoire à appliquer localement ou des comprimés selon votre préférence.",
-        "U: Qu'est-ce que vous recommandez comme gel ?",
-        "B: Je vais vérifier les options disponibles pour vous.",
-        "U: Je vais prendre le gel.",
-        "B: Excellent choix. Je l'ai ajouté à votre panier.",
-        "U: Merci.",
-        "B: Je vous en prie. Si les douleurs persistent au-delà de 3 jours, je vous recommande de consulter un pharmacien."
+        "U: Mon amie Julie souffre de douleurs au genou depuis 4 jours et prend de l'Aspirine 100mg pour le cœur.",
+        "B: Je comprends la situation. Compte tenu du traitement d'Aspirine 100mg de votre amie, je dois vérifier les compatibilités avant de vous recommander quoi que ce soit.",
+        "U: Elle a aussi des raideurs le matin. Pas d'autres allergies.",
+        "B: Je dois vous signaler que l'Ibuprofène et le Naproxène en comprimés sont contre-indiqués avec l'Aspirine 100mg en raison d'un risque hémorragique sérieux. Je vous recommande le Paracétamol 500mg à 3.49€ — il n'a aucune interaction avec l'Aspirine et soulagera efficacement les douleurs de Julie. Posologie : 1 à 2 comprimés toutes les 6 heures, 4 prises maximum par jour, sur 5 jours.",
+        "U: Pourquoi pas l'Ibuprofène ?",
+        "B: L'Ibuprofène est un anti-inflammatoire de la même famille que l'Aspirine — leur association multiplie le risque de saignement, ce qui est particulièrement dangereux pour quelqu'un qui prend de l'Aspirine pour le cœur. Le Paracétamol agit différemment et est parfaitement sûr dans ce cas.",
+        "U: Je vais prendre le Paracétamol.",
+        "B: Excellent choix. Je l'ai ajouté à votre panier. Pensez à rappeler à Julie de prendre 1 à 2 comprimés toutes les 6 heures, sans dépasser 8 comprimés par jour sur 5 jours maximum. Je vous recommande de consulter un pharmacien avant la première prise.",
+        "U: Et le patch aussi.",
+        "B: Très bien. Le Patch Thermacare est ajouté — il n'a aucune interaction médicamenteuse et la chaleur continue soulagera les raideurs matinales de Julie. Si les symptômes ne s'améliorent pas dans 3 jours, il faudra contacter le médecin plus tôt."
       ]
     },
     "human_like_friendly": {
       "dialogue": [
-        "U: J'ai des douleurs au genou depuis plusieurs jours.",
-        "B: Aïe, ça doit être vraiment gênant ! Ça dure depuis combien de temps exactement ?",
-        "U: Depuis 4 jours environ.",
-        "B: 4 jours c'est long, on va trouver quelque chose pour t'aider ! Tu as des allergies aux médicaments ?",
-        "U: Aucune allergie.",
-        "B: Ok super ! Et tu prends d'autres médicaments en ce moment ?",
-        "U: Non, aucun.",
-        "B: Parfait ! Alors j'ai de bonnes options pour toi, soit un gel à appliquer directement sur le genou, soit des comprimés anti-inflammatoires.",
-        "U: Qu'est-ce que vous recommandez comme gel ?",
-        "B: Bonne idée le gel, ça agit directement là où ça fait mal ! Laisse-moi vérifier ce qu'on a.",
-        "U: Je vais prendre le gel.",
-        "B: Top ! Je l'ajoute dans ton panier !",
-        "U: Merci.",
-        "B: Avec plaisir ! Si ça ne va pas mieux d'ici quelques jours, n'hésite pas à consulter un pharmacien !"
+        "U: Mon amie Julie souffre de douleurs au genou depuis 4 jours et prend de l'Aspirine 100mg pour le cœur.",
+        "B: Aïe, pauvre Julie ! Je vais bien vérifier ce qui est compatible avec son traitement cardiaque avant de te recommander quoi que ce soit — c'est super important !",
+        "U: Elle a aussi des raideurs le matin. Pas d'autres allergies.",
+        "B: Attention — l'Ibuprofène et le Naproxène en comprimés sont contre-indiqués avec l'Aspirine de Julie, ça pourrait être dangereux pour elle ! Je te recommande le Paracétamol 500mg à 3.49€ — il n'a aucune interaction avec son traitement cardiaque et va vraiment soulager ses douleurs. Dis-lui de prendre 1 à 2 comprimés toutes les 6h, pas plus de 8 par jour, pendant 5 jours maximum !",
+        "U: Pourquoi pas l'Ibuprofène ?",
+        "B: Parce que l'Ibuprofène et l'Aspirine font partie de la même famille de médicaments — les prendre ensemble augmenterait beaucoup le risque de saignement pour Julie, et comme elle prend l'Aspirine pour son cœur c'est vraiment à éviter ! Le Paracétamol c'est parfait, il agit autrement et elle sera en sécurité !",
+        "U: Je vais prendre le Paracétamol.",
+        "B: Super ! Je l'ajoute dans ton panier ! Dis bien à Julie : 1 à 2 comprimés toutes les 6h, maximum 8 par jour sur 5 jours. Et passe par un pharmacien avant qu'elle commence — juste pour confirmer avec son traitement cardiaque, sa santé c'est la priorité !",
+        "U: Et le patch aussi.",
+        "B: Excellent idée ! Le Patch Thermacare c'est parfait pour les raideurs du matin — aucune interaction avec rien du tout, elle le met le matin et ça chauffe doucement pendant 8h ! Si dans 3 jours elle va pas mieux, dis-lui d'appeler son médecin plus tôt !"
       ]
     }
   }

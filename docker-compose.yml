@@ -25,7 +25,7 @@ services:
       context: ./chat_interface
       dockerfile: Dockerfile
     ports:
-      - "8501:8501"
+      - "80:8501"
     volumes:
       - ./data:/data
     restart: unless-stopped

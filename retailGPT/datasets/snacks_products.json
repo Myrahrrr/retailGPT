@@ -5,140 +5,220 @@
       "product_name": "Lay's Chips Nature 150g",
       "product_volume_in_hectoliters": 0.002,
       "full_price": 2.49,
-      "category": "chips"
+      "category": "chips",
+      "profil_gustatif": "salé, neutre",
+      "portions_estimees": 6,
+      "occasion": "soirée, apéro, partage",
+      "format": "paquet partage"
     },
     {
       "row_id": 2,
       "product_name": "Pringles Original 165g",
       "product_volume_in_hectoliters": 0.002,
       "full_price": 3.29,
-      "category": "chips"
+      "category": "chips",
+      "profil_gustatif": "salé, neutre",
+      "portions_estimees": 6,
+      "occasion": "soirée, conservation, partage",
+      "format": "tube hermétique, conservation optimale"
     },
     {
       "row_id": 3,
       "product_name": "Doritos Nacho Cheese 170g",
       "product_volume_in_hectoliters": 0.002,
       "full_price": 2.99,
-      "category": "chips"
+      "category": "chips",
+      "profil_gustatif": "salé, épicé, fromage",
+      "portions_estimees": 6,
+      "occasion": "soirée, apéro",
+      "format": "paquet partage, saveur intense"
     },
     {
       "row_id": 4,
       "product_name": "Oreo Cookies 154g",
       "product_volume_in_hectoliters": 0.002,
       "full_price": 2.79,
-      "category": "biscuits"
+      "category": "biscuits",
+      "profil_gustatif": "sucré, chocolat, vanille",
+      "portions_estimees": 8,
+      "occasion": "soirée, goûter, partage",
+      "format": "paquet partage, classique universel"
     },
     {
       "row_id": 5,
       "product_name": "Pepito Chocolat 300g",
       "product_volume_in_hectoliters": 0.003,
       "full_price": 2.49,
-      "category": "biscuits"
+      "category": "biscuits",
+      "profil_gustatif": "sucré, chocolat",
+      "portions_estimees": 12,
+      "occasion": "soirée, goûter, partage",
+      "format": "grand format, excellent rapport qualité-prix"
     },
     {
       "row_id": 6,
       "product_name": "Haribo Goldbears 200g",
       "product_volume_in_hectoliters": 0.002,
       "full_price": 1.99,
-      "category": "bonbons"
+      "category": "bonbons",
+      "profil_gustatif": "sucré, fruité, gélifié",
+      "portions_estimees": 8,
+      "occasion": "soirée, enfants, partage",
+      "format": "sachet partage"
     },
     {
       "row_id": 7,
       "product_name": "Dragibus Haribo 300g",
       "product_volume_in_hectoliters": 0.003,
       "full_price": 2.49,
-      "category": "bonbons"
+      "category": "bonbons",
+      "profil_gustatif": "sucré, fruité, coloré",
+      "portions_estimees": 12,
+      "occasion": "soirée, partage",
+      "format": "grand format, excellent rapport qualité-prix"
     },
     {
       "row_id": 8,
       "product_name": "Cacahuètes grillées salées 200g",
       "product_volume_in_hectoliters": 0.002,
       "full_price": 1.79,
-      "category": "noix"
+      "category": "noix",
+      "profil_gustatif": "salé, protéiné, croquant",
+      "portions_estimees": 8,
+      "occasion": "apéro, soirée, partage",
+      "format": "sachet partage, riche en protéines"
     },
     {
       "row_id": 9,
       "product_name": "Mix noix et fruits secs 250g",
       "product_volume_in_hectoliters": 0.003,
       "full_price": 3.49,
-      "category": "noix"
+      "category": "noix",
+      "profil_gustatif": "salé et sucré, protéiné, varié",
+      "portions_estimees": 10,
+      "occasion": "apéro, soirée, healthy",
+      "format": "sachet partage, option équilibrée"
     },
     {
       "row_id": 10,
       "product_name": "Pop-corn beurre salé 100g",
       "product_volume_in_hectoliters": 0.002,
       "full_price": 1.99,
-      "category": "autre"
+      "category": "autre",
+      "profil_gustatif": "salé, beurré, léger",
+      "portions_estimees": 4,
+      "occasion": "soirée, cinéma, film",
+      "format": "sachet individuel à partager"
     },
     {
       "row_id": 11,
       "product_name": "Twix 2 barres 92g",
       "product_volume_in_hectoliters": 0.001,
       "full_price": 1.49,
-      "category": "chocolat"
+      "category": "chocolat",
+      "profil_gustatif": "sucré, chocolat, caramel, biscuit",
+      "portions_estimees": 2,
+      "occasion": "individuel, goûter",
+      "format": "format individuel 2 barres"
     },
     {
       "row_id": 12,
       "product_name": "Snickers 2 barres 83g",
       "product_volume_in_hectoliters": 0.001,
       "full_price": 1.49,
-      "category": "chocolat"
+      "category": "chocolat",
+      "profil_gustatif": "sucré, chocolat, cacahuètes, caramel",
+      "portions_estimees": 2,
+      "occasion": "individuel, goûter, énergie",
+      "format": "format individuel 2 barres, rassasiant"
     },
     {
       "row_id": 13,
       "product_name": "Kinder Bueno 2 barres 43g",
       "product_volume_in_hectoliters": 0.001,
       "full_price": 1.29,
-      "category": "chocolat"
+      "category": "chocolat",
+      "profil_gustatif": "sucré, chocolat au lait, noisette, léger",
+      "portions_estimees": 2,
+      "occasion": "individuel, goûter",
+      "format": "format individuel léger"
     },
     {
       "row_id": 14,
       "product_name": "Crackers Belin 150g",
       "product_volume_in_hectoliters": 0.002,
       "full_price": 2.19,
-      "category": "biscuits salés"
+      "category": "biscuits salés",
+      "profil_gustatif": "salé, léger, neutre",
+      "portions_estimees": 8,
+      "occasion": "apéro, soirée, accompagnement",
+      "format": "paquet partage, faible teneur en matières grasses"
     },
     {
       "row_id": 15,
       "product_name": "TUC Crackers Original 100g",
       "product_volume_in_hectoliters": 0.001,
       "full_price": 1.89,
-      "category": "biscuits salés"
+      "category": "biscuits salés",
+      "profil_gustatif": "salé, beurré, croustillant",
+      "portions_estimees": 6,
+      "occasion": "apéro, soirée",
+      "format": "paquet partage, classique apéro"
     },
     {
       "row_id": 16,
       "product_name": "Coca-Cola 1.5L",
       "product_volume_in_hectoliters": 0.015,
       "full_price": 2.29,
-      "category": "boissons"
+      "category": "boissons",
+      "profil_gustatif": "sucré, gazeux, cola",
+      "portions_estimees": 6,
+      "occasion": "soirée, repas, partage",
+      "format": "grande bouteille, 250ml par personne pour 6"
     },
     {
       "row_id": 17,
       "product_name": "Coca-Cola Zero 1.5L",
       "product_volume_in_hectoliters": 0.015,
       "full_price": 2.29,
-      "category": "boissons"
+      "category": "boissons",
+      "profil_gustatif": "gazeux, cola, sans sucre",
+      "portions_estimees": 6,
+      "occasion": "soirée, partage",
+      "format": "grande bouteille, option sans sucre"
     },
     {
       "row_id": 18,
       "product_name": "Sprite 1.5L",
       "product_volume_in_hectoliters": 0.015,
       "full_price": 1.99,
-      "category": "boissons"
+      "category": "boissons",
+      "profil_gustatif": "gazeux, citron-citron vert, rafraîchissant",
+      "portions_estimees": 6,
+      "occasion": "soirée, partage",
+      "format": "grande bouteille, alternative légère au cola"
     },
     {
       "row_id": 19,
       "product_name": "Fanta Orange 1.5L",
       "product_volume_in_hectoliters": 0.015,
       "full_price": 1.99,
-      "category": "boissons"
+      "category": "boissons",
+      "profil_gustatif": "sucré, gazeux, orange, fruité",
+      "portions_estimees": 6,
+      "occasion": "soirée, partage",
+      "format": "grande bouteille, saveur fruitée"
     },
     {
       "row_id": 20,
       "product_name": "Eau pétillante Perrier 75cl",
       "product_volume_in_hectoliters": 0.0075,
       "full_price": 1.49,
-      "category": "boissons"
+      "category": "boissons",
+      "profil_gustatif": "neutre, pétillant, sans sucre",
+      "portions_estimees": 3,
+      "occasion": "apéro, healthy, soirée",
+      "format": "bouteille individuelle, option sans sucre ni caféine"
     }
   ]
 }
