@@ -3,7 +3,6 @@ import json
 import os
 import sys
 
-import aiohttp
 from colorama import Fore
 from openai.types.chat import ChatCompletionMessageToolCall
 
@@ -15,7 +14,6 @@ from .schemas import ChatbotResponse
 from .services.cart_handler import CartHandler
 from .services.llm_handler import LLMHandler
 from .services.memory_handler import MemoryHandler
-from .services.product_handler import ProductHandler
 from .services.guardrails.guardrails import Guardrails
 
 
@@ -35,29 +33,9 @@ class LLMChatbot:
     )
 
     @staticmethod
-    async def _search_product_recommendation(
-        user_id: str,
-        product_query: str,
-        produit: str,
-        session: aiohttp.ClientSession | None = None,
-    ) -> str:
-        """Searches for a product recommendation.
-
-        Args:
-            user_id: The user's ID.
-            product_query: Description of the desired product.
-            produit: Product type — 'snacks' or 'medicaments'
-            session: aiohttp session for concurrent searching.
-        """
-        recommendation = await ProductHandler.get_product_recommendation(
-            user_id, product_query, produit, session
-        )
-        return recommendation
-
-    @staticmethod
-    def _edit_cart(user_id: str, operation: str, product: str, amount: str) -> str:
+    def _edit_cart(user_id: str, operation: str, product: str, amount: str, price: float = None) -> str:
         """Edits the user's cart."""
-        return CartHandler.process_cart_operation(user_id, operation, product, amount)
+        return CartHandler.process_cart_operation(user_id, operation, product, amount, price)
 
     @staticmethod
     def _tool_call_sorting(tool_call: ChatCompletionMessageToolCall) -> int:
@@ -88,21 +66,12 @@ class LLMChatbot:
                 operation = function_arguments["operation"]
                 product = function_arguments["product"]
                 amount = function_arguments["amount"]
+                price = function_arguments.get("price", None)
 
-                if (
-                    operation == "add"
-                    and not ProductHandler.product_was_recommended(user_id, product)
-                ):
-                    print("Trying to add a product that was not recommended:", product)
-                    function_output = LLMChatbot._early_operation_warning
-                    function_output += await LLMChatbot._search_product_recommendation(
-                        user_id, product, produit
-                    )
-                else:
-                    function_output = LLMChatbot._edit_cart(
-                        user_id, operation, product, amount
-                    )
-                    CartHandler.set_should_send_cart_summary(user_id, True)
+                function_output = LLMChatbot._edit_cart(
+                    user_id, operation, product, amount, price
+                )
+                CartHandler.set_should_send_cart_summary(user_id, True)
 
             else:
                 # finalize_order
@@ -121,47 +90,10 @@ class LLMChatbot:
         produit: str,
         tool_calls: list[ChatCompletionMessageToolCall]
     ) -> list[dict]:
-        """Processes tool calls, dispatching to the appropriate handlers."""
-        search_tool_calls = []
-        sequential_tool_calls = []
-        tasks = []
-        output_messages = []
-        call_ids = []
-
-        for tool_call in tool_calls:
-            if tool_call.function.name == "search_product_recommendation":
-                search_tool_calls.append(tool_call)
-            else:
-                sequential_tool_calls.append(tool_call)
-
-        async with aiohttp.ClientSession() as session:
-            if search_tool_calls:
-                for call in search_tool_calls:
-                    call_id = call.id
-                    function_arguments = json.loads(call.function.arguments)
-                    task = asyncio.create_task(
-                        LLMChatbot._search_product_recommendation(
-                            user_id,
-                            function_arguments["product_query"],
-                            produit,
-                            session,
-                        )
-                    )
-                    tasks.append(task)
-                    call_ids.append(call_id)
-
-                results = await asyncio.gather(*tasks)
-                for result, call_id in zip(results, call_ids):
-                    output_messages.append(
-                        {"role": "tool", "content": result, "tool_call_id": call_id}
-                    )
-
-        if sequential_tool_calls:
-            sequential_output = await LLMChatbot._process_sequential_tool_calls(
-                user_id, produit, sequential_tool_calls
-            )
-            output_messages.extend(sequential_output)
-
+        """Processes tool calls — sans catalogue, uniquement edit_cart et finalize_order."""
+        output_messages = await LLMChatbot._process_sequential_tool_calls(
+            user_id, produit, tool_calls
+        )
         return output_messages
 
     @staticmethod

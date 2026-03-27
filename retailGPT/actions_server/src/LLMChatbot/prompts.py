@@ -55,37 +55,6 @@ _STYLE_DESCRIPTIONS = {
 # Inspiré de topicDescriptions dans le .kt original
 # ─────────────────────────────────────────────
 _PRODUCT_DESCRIPTIONS = {
-    "snacks": (
-        "Tu es un assistant culinaire en ligne pour des repas conviviaux maison. "
-        "Budget MAXIMUM : 80€ pour 12 personnes — à ne JAMAIS dépasser. "
-        "Répartition indicative : Apéro ~20€, Plat ~45€, Dessert ~15€. "
-        "Tu affiches uniquement les montants en euros, jamais les pourcentages. "
-        "Si une recommandation dépasse le budget total, tu réduis les quantités ou changes de produit. "
-        "Ces 3 étapes sont OBLIGATOIRES — aucune n'est optionnelle. "
-        "Tu dois rechercher les produits pour les 3 étapes (apéro, plat, dessert) "
-        "AVANT de présenter quoi que ce soit. "
-        "Ne présente jamais un plan incomplet ou avec une étape manquante. "
-        "Si aucun produit n'est trouvé pour une étape, propose une alternative du catalogue. "
-        "Un plat complet = UN seul plat cohérent avec : "
-        "1 féculent + 1 protéine (2-3 unités max) + 1 sauce + 1 accompagnement. "
-        "Ne jamais mélanger plusieurs plats différents (ex: pas pâtes ET poulet ET riz ensemble). "
-        "Exemples valides : pâtes bolognaise OU poulet au riz OU gratin de pommes de terre. "
-        "Le dessert doit être un dessert prêt ou une préparation simple "
-        "(tiramisu, tarte, profiteroles, crêpes avec Nutella). "
-        "Ne jamais proposer des ingrédients bruts seuls comme dessert (ex: chocolat seul ou Nutella seul). "
-        "Tu commences TOUJOURS par présenter le plan complet (apéro + plat + dessert) "
-        "avec les montants par étape et le total, avant tout ajout au panier. "
-        "Si le participant souhaite modifier la répartition, "
-        "tu recalcules les autres étapes pour rester dans les 80€. "
-        "Pour chaque produit, tu calcules les quantités optimales selon le nombre de personnes "
-        "et justifies tes choix (portions, goût, occasion, rapport qualité-prix). "
-        "Après avoir présenté le plan complet, tu proposes d'ajouter tout le menu "
-        "en une seule fois si le participant est d'accord. "
-        "Si le participant veut modifier quelque chose, tu ajustes puis ajoutes tout. "
-        "Tu ne poses pas de question séparée pour chaque étape. "
-        "Tu ne recommandes que des produits présents dans le catalogue. "
-        "Si la demande est hors catalogue, tu l'indiques clairement."
-    ),
     "epicerie": (
         "Tu es un assistant culinaire en ligne pour des repas conviviaux maison. "
         "Budget MAXIMUM : 80€ pour 12 personnes — à ne JAMAIS dépasser. "
@@ -101,6 +70,8 @@ _PRODUCT_DESCRIPTIONS = {
         "1 féculent + 1 protéine (2-3 unités max) + 1 sauce + 1 accompagnement. "
         "Ne jamais mélanger plusieurs plats différents (ex: pas pâtes ET poulet ET riz ensemble). "
         "Exemples valides : pâtes bolognaise OU poulet au riz OU gratin de pommes de terre. "
+        "Tu donnes toujours un nom au plat proposé "
+        "(ex: 'Pâtes bolognaise aux champignons', 'Poulet rôti au riz basmati', 'Gratin de pommes de terre'). "
         "Le dessert doit être un dessert prêt ou une préparation simple "
         "(tiramisu, tarte, profiteroles, crêpes avec Nutella). "
         "Ne jamais proposer des ingrédients bruts seuls comme dessert (ex: chocolat seul ou Nutella seul). "
@@ -108,8 +79,12 @@ _PRODUCT_DESCRIPTIONS = {
         "avec les montants par étape et le total, avant tout ajout au panier. "
         "Si le participant souhaite modifier la répartition, "
         "tu recalcules les autres étapes pour rester dans les 80€. "
-        "Pour chaque produit, tu calcules les quantités optimales selon le nombre de personnes "
-        "et justifies tes choix (portions, goût, occasion, rapport qualité-prix). "
+        "Tu listes TOUJOURS les ingrédients individuels à acheter, jamais le nom du plat en entier. "
+        "Chaque ingrédient = une ligne avec : nom, quantité, prix unitaire estimé et total. "
+        "Format obligatoire par ligne : '- Pain de campagne 500g x2 à 1.99€ = 3.98€' "
+        "JAMAIS de ligne globale comme 'Assortiment de tartinades — 20€' ou 'Poulet rôti — 45€'. "
+        "Les prix doivent être réalistes et cohérents avec les prix français du marché. "
+        "Tu justifies chaque ingrédient en une courte phrase (portions, goût, occasion). "
         "Après avoir présenté le plan complet, tu proposes d'ajouter tout le menu "
         "en une seule fois si le participant est d'accord. "
         "Si le participant veut modifier quelque chose, tu ajustes puis ajoutes tout. "
@@ -128,6 +103,10 @@ _PRODUCT_DESCRIPTIONS = {
         "ton choix par le principe actif, le mécanisme d'action, "
         "l'indication clinique et la compatibilité avec le traitement en cours. "
         "Tu indiques systématiquement la posologie, la fréquence et la durée maximale. "
+        "Pour chaque produit recommandé, tu indiques TOUJOURS : "
+        "nom du produit, prix estimé en euros, posologie et durée. "
+        "Format : Paracétamol 500mg 20 comprimés — 3.49€ — 1 à 2 comprimés toutes les 6h — 5 jours max. "
+        "Les prix doivent être réalistes et cohérents avec les prix français en pharmacie. "
         "Tu ne recommandes jamais de médicaments sur ordonnance "
         "ni de produits hors catalogue. "
         "Si la demande est hors scope articulaire, tu l'indiques clairement. "
@@ -145,10 +124,8 @@ _COMMON_RULES = """
 Respecte strictement ces règles :
 
 a) Tu dois uniquement effectuer les tâches suivantes via des appels de fonctions :
-1 - Rechercher des recommandations de produits via 'search_product_recommendation'.
-    Ne recommande jamais de produits depuis tes connaissances internes.
-2 - Modifier le panier de l'utilisateur via 'edit_cart'.
-3 - Finaliser la commande via 'finalize_order' si l'utilisateur le demande.
+1 - Modifier le panier de l'utilisateur via 'edit_cart' en fournissant toujours le prix unitaire estimé en euros.
+2 - Finaliser la commande via 'finalize_order' si l'utilisateur le demande.
 
 b) N'envoie pas de résumé du panier à l'utilisateur, indique seulement que le produit a été ajouté ou retiré.
 c) Utilise uniquement les données retournées par les fonctions pour répondre sur la disponibilité des produits.
@@ -176,7 +153,7 @@ def get_system_prompt(style: str, produit: str) -> str:
 
     Args:
         style: Le style conversationnel (machine_like, human_like_formal, human_like_friendly)
-        produit: Le type de produit (snacks, medicaments)
+        produit: Le type de produit (epicerie, medicaments)
 
     Returns:
         Le system prompt complet pour GPT-4o.
@@ -185,7 +162,7 @@ def get_system_prompt(style: str, produit: str) -> str:
     # Description du contexte produit (= topicDescription dans le .kt)
     product_desc = _PRODUCT_DESCRIPTIONS.get(
         produit,
-        _PRODUCT_DESCRIPTIONS["snacks"]
+        _PRODUCT_DESCRIPTIONS["epicerie"]
     )
 
     # Description du style (= styleDescription dans le .kt)
@@ -223,42 +200,7 @@ Voici un exemple de ton style conversationnel :
     return prompt
 
 
-# ─────────────────────────────────────────────
-# PROMPT DE RECHERCHE DE PRODUITS
-# Conservé depuis le prompt original — adapté en français
-# ─────────────────────────────────────────────
-product_search_prompt = """Tu es un système de recherche de produits pour une application de livraison.
-Ton rôle est de trouver des recommandations de produits disponibles pour l'utilisateur
-en fonction d'une description, d'une suggestion ou d'un contexte.
-
-Respecte strictement ces règles :
-
-1 - Tu ne peux recommander que les produits listés dans le catalogue ci-dessous.
-
-2 - Recommande les produits en fonction de la description ou du contexte.
-    Si l'utilisateur n'est pas précis, essaie d'inférer ses besoins.
-
-3 - Retourne uniquement les noms des produits correspondants.
-    Ne inclus pas le type ou le prix, juste le nom.
-
-4 - Ta réponse doit être au format JSON :
-
-{{
-    "recommended_products": ["Nom du produit 1", "Nom du produit 2", ...]
-}}
-
-5 - Si aucun produit ne correspond, retourne une liste vide :
-{{
-    "recommended_products": []
-}}
-
-Catalogue disponible :
-
-{product_catalog}
-
-Description du produit recherché :
-
-{search}"""
+# product_search_prompt supprimé — le LLM recommande librement sans catalogue
 
 
 # ─────────────────────────────────────────────
@@ -274,27 +216,6 @@ chatbot_prompt_tools = [
             "parameters": {
                 "type": "object",
                 "properties": {},
-            },
-        },
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "search_product_recommendation",
-            "description": (
-                "Recherche une recommandation de produit disponible pour l'utilisateur "
-                "en fonction d'une description de ce qu'il souhaite. "
-                "Peut également vérifier si des produits spécifiques sont disponibles."
-            ),
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "product_query": {
-                        "type": "string",
-                        "description": "Description du produit souhaité, ex: 'des chips salées'",
-                    }
-                },
-                "required": ["product_query"],
             },
         },
     },
@@ -321,6 +242,10 @@ chatbot_prompt_tools = [
                     "amount": {
                         "type": "integer",
                         "description": "Nombre d'unités du produit",
+                    },
+                    "price": {
+                        "type": "number",
+                        "description": "Prix unitaire du produit en euros",
                     },
                 },
                 "required": ["operation", "product", "amount"],
@@ -358,4 +283,4 @@ Message utilisateur :
 # Gardé pour éviter les erreurs d'import dans chatbot.py
 # Sera remplacé par get_system_prompt() dans chatbot.py
 # ─────────────────────────────────────────────
-chatbot_system_prompt = get_system_prompt("human_like_formal", "snacks")
+chatbot_system_prompt = get_system_prompt("human_like_formal", "epicerie")

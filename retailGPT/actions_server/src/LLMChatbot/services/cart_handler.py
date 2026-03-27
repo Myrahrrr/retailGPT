@@ -1,7 +1,6 @@
 from typing import List
 
 from .database import Database
-from .product_handler import ProductHandler
 
 
 class CartHandler:
@@ -134,7 +133,7 @@ class CartHandler:
 
     @staticmethod
     def process_cart_operation(
-        user_id: str, operation: str, product_name: str, number_of_units: int
+        user_id: str, operation: str, product_name: str, number_of_units: int, price: float = None
     ) -> str:
         """Processes a cart operation.
 
@@ -154,7 +153,7 @@ class CartHandler:
 
         if operation == "add":
             output_string = CartHandler._process_addition(
-                user_id, cart, product_name, number_of_units
+                user_id, cart, product_name, number_of_units, price
             )
         elif operation == "remove":
             output_string = CartHandler._process_removal(
@@ -247,7 +246,7 @@ class CartHandler:
 
     @staticmethod
     def _process_addition(
-        user_id: str, cart: dict, product_name: str, number_of_units: int
+        user_id: str, cart: dict, product_name: str, number_of_units: int, price: float = None
     ) -> str:
         """
         Processes the addition of a product to the user's cart.
@@ -264,8 +263,9 @@ class CartHandler:
         Summary of the operation result.
         """
 
-        price_per_unit = ProductHandler.get_product_unit_price(user_id, product_name)
-        volume_per_unit = ProductHandler.get_product_unit_volume(user_id, product_name)
+        # Sans catalogue — prix fourni par le LLM directement
+        price_per_unit = price if price is not None else 0.0
+        volume_per_unit = 0.001  # valeur par défaut fixe
 
         additional_volume = volume_per_unit * number_of_units
 
