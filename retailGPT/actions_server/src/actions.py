@@ -120,10 +120,6 @@ class LLMProcessing(Action):
         # Vérification si la commande doit être finalisée
         if CartHandler.get_should_finish_purchase(user_id):
             CartHandler.set_should_finish_purchase(user_id, False)
-            return [
-                FollowupAction("payment_method_form"),
-                ActiveLoop("payment_method_form"),
-            ]
 
         return [FollowupAction("action_listen")]
 
