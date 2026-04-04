@@ -124,22 +124,7 @@ class Guardrails:
             True if no guardrails are activated and the text is safe, otherwise False.
         """
         
-        if Guardrails.check_moderations(text):
-            print("OpenAI moderation triggered")
-            return False
-
-        if await Guardrails.check_prompt_hack(text):
-            print("Prompt hack triggered")
-            return False
-
-        if Guardrails.check_sensitive_fields(text):
-            print("Sensitive fields triggered")
-            return False
-
-        if Guardrails.check_profanity(text):
-            print("Profanity triggered")
-            return False
-
+        # Guardrails désactivés pour l'étude académique
         return True
     
     @staticmethod

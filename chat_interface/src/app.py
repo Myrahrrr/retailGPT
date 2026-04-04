@@ -12,47 +12,29 @@ from utils.data_utils import chat_to_word, generate_conversation_id
 # CONFIG PAGE
 # ─────────────────────────────────────────────
 im = Image.open("./images/neuralmind.png")
-st.set_page_config(page_title="Assistant en ligne", page_icon=im)
+st.set_page_config(page_title="Assistant en ligne", page_icon=im, initial_sidebar_state="collapsed")
 
 st.markdown("""
 <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
+[data-testid="collapsedControl"] {display: none;}
+[data-testid="stSidebar"] {display: none;}
 </style>
 """, unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────
-# CONDITIONS EXPÉRIMENTALES — ROUND-ROBIN
+# CONDITIONS — 3 styles, 2 missions chacun
 # ─────────────────────────────────────────────
 CONDITIONS = [
-    {"style": "machine_like",        "produit": "epicerie"},
-    {"style": "human_like_formal",   "produit": "epicerie"},
-    {"style": "human_like_friendly", "produit": "epicerie"},
-    {"style": "machine_like",        "produit": "medicaments"},
-    {"style": "human_like_formal",   "produit": "medicaments"},
-    {"style": "human_like_friendly", "produit": "medicaments"},
+    {"style": "machine_like"},
+    {"style": "human_like_formal"},
+    {"style": "human_like_friendly"},
 ]
 
 MISSIONS = {
-    "medicaments": {
-        "titre": "📋 Votre mission",
-        "texte": (
-            "**Aidez votre amie Julie (45 ans)**, qui a des douleurs et ne peut pas "
-            "consulter avant deux semaines. "
-            "Elle prend de l'aspirine (100 mg/jour) pour un traitement cardiaque.\n\n"
-            "👉 **Objectif :** trouver un médicament sans ordonnance adapté avec le chatbot, "
-            "puis l'ajouter au panier.\n\n"
-            "Utilisez le chatbot comme en situation réelle : posez vos questions, "
-            "précisez les contraintes (traitement, allergies, préférences, inquiétudes…).\n\n"
-            "---\n\n"
-            "💡 **Comment interagir avec le chatbot ?**\n\n"
-            "- Une proposition vous convient → demandez au chatbot de l'ajouter au panier.\n"
-            "- La proposition n'est pas satisfaisante → demandez des ajustements selon vos besoins.\n"
-            "- Aucune des propositions ne vous a plu → appuyez sur le bouton **Passer directement au questionnaire**."
-        ),
-    },
     "epicerie": {
-        "titre": "📋 Votre mission",
+        "titre": "📋 Mission 1 — Épicerie",
         "texte": (
             "**Organisez votre soirée de ce week-end avec le chatbot.**\n\n"
             "👉 **Objectif :** créer un panier de courses complet pour un repas "
@@ -60,6 +42,23 @@ MISSIONS = {
             "Utilisez le chatbot comme en situation réelle : exprimez vos envies, "
             "contraintes et préférences (budget, régime, goûts…). "
             "Le chatbot vous proposera des idées et vous aidera à remplir votre panier.\n\n"
+            "---\n\n"
+            "💡 **Comment interagir avec le chatbot ?**\n\n"
+            "- Une proposition vous convient → demandez au chatbot de l'ajouter au panier.\n"
+            "- La proposition n'est pas satisfaisante → demandez des ajustements selon vos besoins.\n"
+            "- Aucune des propositions ne vous a plu → appuyez sur le bouton **Passer directement au questionnaire**."
+        ),
+    },
+    "medicaments": {
+        "titre": "📋 Mission 2 — Médicaments",
+        "texte": (
+            "**Aidez votre amie Julie (45 ans)**, qui souffre de douleurs lombaires aiguës "
+            "depuis ce matin et ne peut pas consulter avant deux semaines. "
+            "Elle prend de l'aspirine (100 mg/jour) pour un traitement cardiaque.\n\n"
+            "👉 **Objectif :** trouver un médicament sans ordonnance adapté avec le chatbot, "
+            "puis l'ajouter au panier.\n\n"
+            "Utilisez le chatbot comme en situation réelle : posez vos questions, "
+            "précisez les contraintes (traitement, allergies, préférences, inquiétudes…).\n\n"
             "---\n\n"
             "💡 **Comment interagir avec le chatbot ?**\n\n"
             "- Une proposition vous convient → demandez au chatbot de l'ajouter au panier.\n"
@@ -111,7 +110,6 @@ def init_db():
             achat_en_ligne TEXT,
             usage_ia TEXT,
             style TEXT,
-            produit TEXT,
             timestamp TEXT
         )
     """)
@@ -128,47 +126,34 @@ def init_db():
 
     c.execute("""
         CREATE TABLE IF NOT EXISTS condition_counts (
-            style TEXT,
-            produit TEXT,
+            style TEXT PRIMARY KEY,
             count INTEGER DEFAULT 0,
-            completed INTEGER DEFAULT 0,
-            PRIMARY KEY (style, produit)
+            completed INTEGER DEFAULT 0
         )
     """)
 
-    # Table questionnaire — une ligne par participant
     c.execute("""
         CREATE TABLE IF NOT EXISTS questionnaire (
             conversation_id TEXT PRIMARY KEY,
-            profil_age TEXT,
-            profil_genre TEXT,
-            profil_achat TEXT,
-            profil_familiarite TEXT,
-            ant_1 INTEGER,
-            ant_2 INTEGER,
-            ant_3 INTEGER,
-            adequation_1 INTEGER,
-            trust_ab_1 INTEGER,
-            trust_ab_2 INTEGER,
-            trust_ab_3 INTEGER,
-            trust_in_1 INTEGER,
-            trust_in_2 INTEGER,
-            trust_in_3 INTEGER,
-            trust_be_1 INTEGER,
-            trust_be_2 INTEGER,
-            trust_be_3 INTEGER,
-            trust_be_4 INTEGER,
-            trust_share INTEGER,
-            added_to_cart TEXT,
+            ant_1_ep INTEGER, ant_2_ep INTEGER, ant_3_ep INTEGER, adequation_1_ep INTEGER,
+            trust_ab_1_ep INTEGER, trust_ab_2_ep INTEGER, trust_ab_3_ep INTEGER,
+            trust_in_1_ep INTEGER, trust_in_2_ep INTEGER, trust_in_3_ep INTEGER,
+            trust_be_1_ep INTEGER, trust_be_2_ep INTEGER, trust_be_3_ep INTEGER, trust_be_4_ep INTEGER,
+            trust_share_ep INTEGER, added_to_cart_ep TEXT,
+            ant_1_med INTEGER, ant_2_med INTEGER, ant_3_med INTEGER, adequation_1_med INTEGER,
+            trust_ab_1_med INTEGER, trust_ab_2_med INTEGER, trust_ab_3_med INTEGER,
+            trust_in_1_med INTEGER, trust_in_2_med INTEGER, trust_in_3_med INTEGER,
+            trust_be_1_med INTEGER, trust_be_2_med INTEGER, trust_be_3_med INTEGER, trust_be_4_med INTEGER,
+            trust_share_med INTEGER, added_to_cart_med TEXT,
             timestamp TEXT
         )
     """)
 
     for cond in CONDITIONS:
         c.execute("""
-            INSERT OR IGNORE INTO condition_counts (style, produit, count)
-            VALUES (?, ?, 0)
-        """, (cond["style"], cond["produit"]))
+            INSERT OR IGNORE INTO condition_counts (style, count, completed)
+            VALUES (?, 0, 0)
+        """, (cond["style"],))
 
     conn.commit()
     conn.close()
@@ -181,36 +166,29 @@ def assign_condition() -> dict:
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""
-        SELECT style, produit FROM condition_counts
+        SELECT style FROM condition_counts
         ORDER BY completed ASC, count ASC, style ASC
         LIMIT 1
     """)
     row = c.fetchone()
     conn.close()
     if row:
-        return {"style": row[0], "produit": row[1]}
+        return {"style": row[0]}
     return CONDITIONS[0]
 
 
-def increment_condition_count(style: str, produit: str):
+def increment_condition_count(style: str):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("""
-        UPDATE condition_counts SET count = count + 1
-        WHERE style = ? AND produit = ?
-    """, (style, produit))
+    c.execute("UPDATE condition_counts SET count = count + 1 WHERE style = ?", (style,))
     conn.commit()
     conn.close()
 
 
-def increment_completed_count(style: str, produit: str):
-    """Incremente le compteur de completions quand le questionnaire est soumis."""
+def increment_completed_count(style: str):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute("""
-        UPDATE condition_counts SET completed = completed + 1
-        WHERE style = ? AND produit = ?
-    """, (style, produit))
+    c.execute("UPDATE condition_counts SET completed = completed + 1 WHERE style = ?", (style,))
     conn.commit()
     conn.close()
 
@@ -220,8 +198,8 @@ def save_participant(conversation_id: str, profil: dict, condition: dict):
     c = conn.cursor()
     c.execute("""
         INSERT OR REPLACE INTO participants
-        (conversation_id, genre, age, achat_en_ligne, usage_ia, style, produit, timestamp)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        (conversation_id, genre, age, achat_en_ligne, usage_ia, style, timestamp)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
         conversation_id,
         profil.get("genre", ""),
@@ -229,7 +207,6 @@ def save_participant(conversation_id: str, profil: dict, condition: dict):
         profil.get("achat_en_ligne", ""),
         profil.get("usage_ia", ""),
         condition.get("style", ""),
-        condition.get("produit", ""),
         datetime.now().isoformat()
     ))
     conn.commit()
@@ -248,45 +225,53 @@ def save_message(conversation_id: str, role: str, content: str):
 
 
 def save_questionnaire(conversation_id: str, reponses: dict):
-    """Sauvegarde les réponses au questionnaire dans SQLite."""
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""
         INSERT OR REPLACE INTO questionnaire (
             conversation_id,
-            profil_age, profil_genre, profil_achat, profil_familiarite,
-            ant_1, ant_2, ant_3, adequation_1,
-            trust_ab_1, trust_ab_2, trust_ab_3,
-            trust_in_1, trust_in_2, trust_in_3,
-            trust_be_1, trust_be_2, trust_be_3, trust_be_4,
-            trust_share, added_to_cart,
+            ant_1_ep, ant_2_ep, ant_3_ep, adequation_1_ep,
+            trust_ab_1_ep, trust_ab_2_ep, trust_ab_3_ep,
+            trust_in_1_ep, trust_in_2_ep, trust_in_3_ep,
+            trust_be_1_ep, trust_be_2_ep, trust_be_3_ep, trust_be_4_ep,
+            trust_share_ep, added_to_cart_ep,
+            ant_1_med, ant_2_med, ant_3_med, adequation_1_med,
+            trust_ab_1_med, trust_ab_2_med, trust_ab_3_med,
+            trust_in_1_med, trust_in_2_med, trust_in_3_med,
+            trust_be_1_med, trust_be_2_med, trust_be_3_med, trust_be_4_med,
+            trust_share_med, added_to_cart_med,
             timestamp
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (
+            ?,
+            ?, ?, ?, ?,  ?, ?, ?,  ?, ?, ?,  ?, ?, ?, ?,  ?, ?,
+            ?, ?, ?, ?,  ?, ?, ?,  ?, ?, ?,  ?, ?, ?, ?,  ?, ?,
+            ?
+        )
     """, (
         conversation_id,
-        reponses.get("profil_age"), reponses.get("profil_genre"),
-        reponses.get("profil_achat"), reponses.get("profil_familiarite"),
-        reponses.get("ant_1"), reponses.get("ant_2"), reponses.get("ant_3"),
-        reponses.get("adequation_1"),
-        reponses.get("trust_ab_1"), reponses.get("trust_ab_2"), reponses.get("trust_ab_3"),
-        reponses.get("trust_in_1"), reponses.get("trust_in_2"), reponses.get("trust_in_3"),
-        reponses.get("trust_be_1"), reponses.get("trust_be_2"), reponses.get("trust_be_3"),
-        reponses.get("trust_be_4"),
-        reponses.get("trust_share"), reponses.get("added_to_cart"),
+        reponses.get("ant_1_ep"), reponses.get("ant_2_ep"), reponses.get("ant_3_ep"), reponses.get("adequation_1_ep"),
+        reponses.get("trust_ab_1_ep"), reponses.get("trust_ab_2_ep"), reponses.get("trust_ab_3_ep"),
+        reponses.get("trust_in_1_ep"), reponses.get("trust_in_2_ep"), reponses.get("trust_in_3_ep"),
+        reponses.get("trust_be_1_ep"), reponses.get("trust_be_2_ep"), reponses.get("trust_be_3_ep"), reponses.get("trust_be_4_ep"),
+        reponses.get("trust_share_ep"), reponses.get("added_to_cart_ep"),
+        reponses.get("ant_1_med"), reponses.get("ant_2_med"), reponses.get("ant_3_med"), reponses.get("adequation_1_med"),
+        reponses.get("trust_ab_1_med"), reponses.get("trust_ab_2_med"), reponses.get("trust_ab_3_med"),
+        reponses.get("trust_in_1_med"), reponses.get("trust_in_2_med"), reponses.get("trust_in_3_med"),
+        reponses.get("trust_be_1_med"), reponses.get("trust_be_2_med"), reponses.get("trust_be_3_med"), reponses.get("trust_be_4_med"),
+        reponses.get("trust_share_med"), reponses.get("added_to_cart_med"),
         datetime.now().isoformat()
     ))
     conn.commit()
     conn.close()
 
-    # Incrementer le compteur de completions pour le round-robin
     try:
         p_conn = sqlite3.connect(DB_PATH)
         pc = p_conn.cursor()
-        pc.execute("SELECT style, produit FROM participants WHERE conversation_id = ?", (conversation_id,))
+        pc.execute("SELECT style FROM participants WHERE conversation_id = ?", (conversation_id,))
         row = pc.fetchone()
         p_conn.close()
         if row:
-            increment_completed_count(row[0], row[1])
+            increment_completed_count(row[0])
     except Exception as e:
         print(f"Error incrementing completed count: {e}")
 
@@ -296,60 +281,49 @@ def save_questionnaire(conversation_id: str, reponses: dict):
 # ─────────────────────────────────────────────
 if "conversation_id" not in st.session_state:
     st.session_state["conversation_id"] = generate_conversation_id()
-if "messages" not in st.session_state:
-    st.session_state["messages"] = []
+if "messages_ep" not in st.session_state:
+    st.session_state["messages_ep"] = []
+if "messages_med" not in st.session_state:
+    st.session_state["messages_med"] = []
 if "profil" not in st.session_state:
     st.session_state["profil"] = None
 if "condition" not in st.session_state:
     st.session_state["condition"] = None
 if "profil_saved" not in st.session_state:
     st.session_state["profil_saved"] = False
-# Écrans : "profil" | "mission" | "chat" | "questionnaire" | "fin"
 if "screen" not in st.session_state:
     st.session_state["screen"] = "profil"
-if "chat_started" not in st.session_state:
-    st.session_state["chat_started"] = False
+if "chat_started_ep" not in st.session_state:
+    st.session_state["chat_started_ep"] = False
+if "chat_started_med" not in st.session_state:
+    st.session_state["chat_started_med"] = False
+if "cart_finalized_ep" not in st.session_state:
+    st.session_state["cart_finalized_ep"] = False
+if "cart_finalized_med" not in st.session_state:
+    st.session_state["cart_finalized_med"] = False
+
+
+def get_conv_id(produit: str) -> str:
+    base = st.session_state["conversation_id"]
+    return f"{base}_ep" if produit == "epicerie" else f"{base}_med"
 
 
 def process_reset_button_click() -> None:
-    st.session_state.pop("messages", None)
+    cid = st.session_state["conversation_id"]
+    reset_chatbot_conversation(f"{cid}_ep")
+    reset_chatbot_conversation(f"{cid}_med")
+    st.session_state["messages_ep"] = []
+    st.session_state["messages_med"] = []
     st.session_state["conversation_id"] = generate_conversation_id()
     st.session_state["profil"] = None
     st.session_state["condition"] = None
     st.session_state["profil_saved"] = False
     st.session_state["screen"] = "profil"
-    st.session_state["chat_started"] = False
-    reset_chatbot_conversation(st.session_state["conversation_id"])
+    st.session_state["chat_started_ep"] = False
+    st.session_state["chat_started_med"] = False
+    st.session_state["cart_finalized_ep"] = False
+    st.session_state["cart_finalized_med"] = False
 
-
-# ─────────────────────────────────────────────
-# SIDEBAR
-# ─────────────────────────────────────────────
-with st.sidebar:
-    st.write("Utilisez cette interface pour interagir avec l'assistant.")
-    st.button("Recommencer la conversation", on_click=process_reset_button_click)
-    st.write("👇 Télécharger la conversation sous forme de document Word.")
-    conversation_docx = chat_to_word(
-        st.session_state.messages,
-        profil=st.session_state.get("profil"),
-        conversation_id=st.session_state["conversation_id"]
-    )
-    st.download_button(
-        "Télécharger la conversation",
-        conversation_docx,
-        file_name=f"{st.session_state['conversation_id']}.docx",
-    )
-    st.header("Instructions")
-    st.write("**Lisez les instructions ci-dessous avant de commencer.**")
-    st.write(
-        "Envoyez un message pour démarrer la conversation. "
-        "L'assistant peut effectuer les actions suivantes :"
-    )
-    st.write("- Vérifier la disponibilité des produits souhaités")
-    st.write("- Fournir des recommandations selon vos besoins")
-    st.write("- Ajouter et retirer des produits de votre panier")
-    st.write("- Finaliser la commande lorsque vous êtes prêt.")
-    st.write("N'hésitez pas à écrire naturellement.")
 
 
 # ─────────────────────────────────────────────
@@ -358,7 +332,6 @@ with st.sidebar:
 def show_profil_form():
     st.title("💬 Assistant en ligne")
 
-    # Intro immersive
     st.markdown("### 👋 Bonjour et bienvenue !")
     st.markdown(
         "Cette expérience se déroule en **deux étapes** :\n\n"
@@ -374,6 +347,7 @@ def show_profil_form():
         genre = st.radio(
             "Votre genre :",
             options=["Homme", "Femme", "Autre", "Préfère ne pas répondre"],
+            index=None,
             horizontal=True,
             label_visibility="collapsed"
         )
@@ -381,22 +355,14 @@ def show_profil_form():
         st.subheader("Âge")
         age = st.selectbox(
             "Votre tranche d'âge :",
-            options=[
-                "Sélectionnez...",
-                "18–25 ans", "26–35 ans", "36–50 ans", "51 ans et plus",
-            ],
+            options=["Sélectionnez...", "18–25 ans", "26–35 ans", "36–50 ans", "51 ans et plus"],
             label_visibility="collapsed"
         )
 
         st.subheader("Fréquence d'achat en ligne")
         achat_en_ligne = st.selectbox(
             "Fréquence :",
-            options=[
-                "Sélectionnez...",
-                "Rare",
-                "Occasionnelle",
-                "Fréquente",
-            ],
+            options=["Sélectionnez...", "Rare", "Occasionnelle", "Fréquente"],
             label_visibility="collapsed"
         )
 
@@ -417,11 +383,7 @@ def show_profil_form():
         submitted = st.form_submit_button("Commencer l'expérience →")
 
         if submitted:
-            if (
-                age == "Sélectionnez..."
-                or achat_en_ligne == "Sélectionnez..."
-                or usage_ia == "Sélectionnez..."
-            ):
+            if age == "Sélectionnez..." or achat_en_ligne == "Sélectionnez..." or usage_ia == "Sélectionnez...":
                 st.error("Merci de renseigner toutes les informations avant de continuer.")
             else:
                 profil = {
@@ -435,65 +397,65 @@ def show_profil_form():
                 if not st.session_state["profil_saved"]:
                     condition = assign_condition()
                     st.session_state["condition"] = condition
-                    increment_condition_count(condition["style"], condition["produit"])
-                    store_condition_in_redis(st.session_state["conversation_id"], condition)
+                    increment_condition_count(condition["style"])
+                    store_condition_in_redis(get_conv_id("epicerie"), {"style": condition["style"], "produit": "epicerie"})
+                    store_condition_in_redis(get_conv_id("medicaments"), {"style": condition["style"], "produit": "medicaments"})
                     save_participant(st.session_state["conversation_id"], profil, condition)
                     st.session_state["profil_saved"] = True
 
-                st.session_state["screen"] = "mission"
+                st.session_state["screen"] = "mission_ep"
                 st.rerun()
 
 
 # ─────────────────────────────────────────────
-# ÉCRAN 2 — MISSION
+# ÉCRAN 2a — MISSION ÉPICERIE
 # ─────────────────────────────────────────────
-def show_mission():
+def show_mission(produit: str):
     st.title("💬 Assistant en ligne")
     st.divider()
-
-    condition = st.session_state.get("condition", {})
-    produit = condition.get("produit", "epicerie")
-    mission = MISSIONS.get(produit, MISSIONS["epicerie"])
-
+    mission = MISSIONS[produit]
     st.markdown(f"## {mission['titre']}")
-
-    # Affichage avec markdown pour respecter les retours à la ligne
     with st.container(border=True):
         st.markdown(mission["texte"])
-
     st.divider()
     st.write("Lorsque vous êtes prêt(e), cliquez sur le bouton ci-dessous pour démarrer.")
 
+    next_screen = "chat_ep" if produit == "epicerie" else "chat_med"
     if st.button("Démarrer la conversation →", type="primary", use_container_width=True):
-        st.session_state["screen"] = "chat"
+        st.session_state["screen"] = next_screen
         st.rerun()
 
 
 # ─────────────────────────────────────────────
-# ÉCRAN 3 — CHAT
+# ÉCRAN 3 — CHAT (générique)
 # ─────────────────────────────────────────────
-def show_chat():
-    st.title("💬 Assistant en ligne")
-
+def show_chat(produit: str):
+    next_screen = "mission_med" if produit == "epicerie" else "questionnaire"
+    next_label = "Passer à la mission 2 →" if produit == "epicerie" else "Passer directement au questionnaire"
+    messages_key = "messages_ep" if produit == "epicerie" else "messages_med"
+    chat_started_key = "chat_started_ep" if produit == "epicerie" else "chat_started_med"
+    conv_id = get_conv_id(produit)
     condition = st.session_state.get("condition", {})
-    produit = condition.get("produit", "epicerie")
-    mission = MISSIONS.get(produit, MISSIONS["epicerie"])
-    with st.expander("📋 Rappel de votre mission", expanded=False):
+    style = condition.get("style", "human_like_formal")
+
+    st.title("💬 Assistant en ligne")
+    mission = MISSIONS[produit]
+    with st.expander(f"📋 {mission['titre']}", expanded=False):
         st.markdown(mission["texte"])
         st.divider()
-        if st.button("⏭️ Passer directement au questionnaire", type="secondary", use_container_width=True):
-            st.session_state["screen"] = "questionnaire"
+        if st.button(f"⏭️ {next_label}", type="secondary", use_container_width=True, key=f"skip_{produit}"):
+            st.session_state["screen"] = next_screen
             st.rerun()
 
+    cart_finalized_key = "cart_finalized_ep" if produit == "epicerie" else "cart_finalized_med"
+
     def process_button_click(value, title) -> None:
-        # Détecter finalisation → passer au questionnaire directement
         if title in ["Tout est correct !", "Everything is correct!", "ok",
                      "Finaliser la commande", "Finaliser", "finalize"]:
-            st.session_state["screen"] = "questionnaire"
-            st.rerun()
+            st.session_state[cart_finalized_key] = True
             return
-        st.session_state.messages.append({"role": "user", "content": title})
-        save_message(st.session_state["conversation_id"], "user", title)
+        st.session_state[messages_key].append({"role": "user", "content": title})
+        save_message(conv_id, "user", title)
         process_message(value)
 
     def display_textual_message(message: dict) -> None:
@@ -501,9 +463,11 @@ def show_chat():
         content = message["content"].replace("\n\n", "\n")
         st.chat_message(role).write(content)
 
-    def display_messages(messages=st.session_state.messages) -> None:
+    def display_messages(messages=None) -> None:
+        if messages is None:
+            messages = st.session_state[messages_key]
         for msg in messages:
-            if msg["role"] == "assistant" or msg["role"] == "user":
+            if msg["role"] in ("assistant", "user"):
                 display_textual_message(msg)
         if messages and messages[-1]["role"] == "button_pair":
             for button in messages[-1]["content"]:
@@ -511,52 +475,54 @@ def show_chat():
                 value = button["payload"]
                 st.button(
                     title,
-                    on_click=lambda value=value, title=title: process_button_click(
-                        value, title
-                    ),
+                    on_click=lambda value=value, title=title: process_button_click(value, title),
                 )
 
     def process_message(user_message: str) -> None:
         with st.spinner("Veuillez patienter..."):
-            bot_responses = get_chatbot_response(
-                user_message,
-                st.session_state["conversation_id"]
-            )
+            bot_responses = get_chatbot_response(user_message, conv_id)
             for bot_response in bot_responses:
                 if "text" in bot_response:
                     content = bot_response["text"].replace("$", "\\$")
                     response_dict = {"role": "assistant", "content": content}
-                    st.session_state.messages.append(response_dict)
-                    save_message(
-                        st.session_state["conversation_id"],
-                        "assistant",
-                        content
-                    )
+                    st.session_state[messages_key].append(response_dict)
+                    save_message(conv_id, "assistant", content)
                 if "buttons" in bot_response and bot_response["buttons"]:
-                    response_dict = {
-                        "role": "button_pair",
-                        "content": bot_response["buttons"],
-                    }
-                    st.session_state.messages.append(response_dict)
+                    response_dict = {"role": "button_pair", "content": bot_response["buttons"]}
+                    st.session_state[messages_key].append(response_dict)
 
-    # Présentation automatique du chatbot au démarrage
-    if not st.session_state["messages"] and not st.session_state.get("chat_started", False):
-        st.session_state["chat_started"] = True
+    # Bouton après finalisation du panier
+    if st.session_state.get(cart_finalized_key, False):
+        st.divider()
+        if produit == "epicerie":
+            st.success("🛒 Votre panier a été finalisé !")
+            if st.button("➡️ Passer à la mission 2", type="primary", use_container_width=True):
+                st.session_state["screen"] = next_screen
+                st.rerun()
+        else:
+            st.success("🛒 Votre panier a été finalisé !")
+            if st.button("➡️ Passer au questionnaire", type="primary", use_container_width=True):
+                st.session_state["screen"] = next_screen
+                st.rerun()
+
+    # Présentation automatique
+    if not st.session_state[messages_key] and not st.session_state.get(chat_started_key, False):
+        st.session_state[chat_started_key] = True
         process_message("start")
         st.rerun()
 
     display_messages()
 
     if user_message := st.chat_input(placeholder="Écrivez votre message ici..."):
-        st.session_state.messages.append({"role": "user", "content": user_message})
+        st.session_state[messages_key].append({"role": "user", "content": user_message})
         st.chat_message("user").write(user_message)
-        save_message(st.session_state["conversation_id"], "user", user_message)
+        save_message(conv_id, "user", user_message)
         process_message(user_message)
         st.rerun()
 
 
 # ─────────────────────────────────────────────
-# ÉCRAN 4 — QUESTIONNAIRE
+# ÉCRAN 4 — QUESTIONNAIRE (côte à côte)
 # ─────────────────────────────────────────────
 LIKERT_OPTIONS = {
     1: "1 — Pas du tout d'accord",
@@ -569,169 +535,130 @@ LIKERT_LABELS = list(LIKERT_OPTIONS.values())
 LIKERT_VALUES = list(LIKERT_OPTIONS.keys())
 
 
-def likert_item(label: str, key: str) -> int:
-    """Affiche un item Likert 1-5 et retourne la valeur sélectionnée."""
+def likert_pair(label: str, key_ep: str, key_med: str):
+    """Affiche un item Likert côte à côte pour les 2 missions."""
     st.write(f"**{label}**")
-    choix = st.radio(
-        label,
-        options=LIKERT_LABELS,
-        index=2,
-        horizontal=True,
-        label_visibility="collapsed",
-        key=key
-    )
-    return LIKERT_VALUES[LIKERT_LABELS.index(choix)]
+    col1, col2 = st.columns(2)
+    with col1:
+        choix_ep = st.radio(
+            "Épicerie",
+            options=LIKERT_LABELS,
+            index=None,
+            horizontal=False,
+            label_visibility="visible",
+            key=key_ep
+        )
+    with col2:
+        choix_med = st.radio(
+            "Médicaments",
+            options=LIKERT_LABELS,
+            index=None,
+            horizontal=False,
+            label_visibility="visible",
+            key=key_med
+        )
+    val_ep = LIKERT_VALUES[LIKERT_LABELS.index(choix_ep)] if choix_ep else None
+    val_med = LIKERT_VALUES[LIKERT_LABELS.index(choix_med)] if choix_med else None
+    return val_ep, val_med
 
 
 def show_questionnaire():
     st.title("📋 Questionnaire")
     st.write(
-        "Merci d'avoir utilisé l'assistant. "
-        "Veuillez répondre aux questions suivantes en vous basant sur votre expérience."
+        "Merci d'avoir utilisé l'assistant pour les deux missions. "
+        "Veuillez répondre aux questions suivantes pour chaque mission."
     )
     st.divider()
 
+    # En-tête colonnes
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("### 🍽️ Mission 1 — Épicerie")
+    with col2:
+        st.markdown("### 🏥 Mission 2 — Médicaments")
+
+    st.caption("Échelle : 1 = Pas du tout d'accord → 5 = Tout à fait d'accord")
+
     with st.form("questionnaire_form"):
-
-        # ── PROFIL PARTICIPANT ──
-        st.subheader("Votre profil")
-        st.caption("Ces informations sont anonymes et utilisées uniquement à des fins de recherche.")
-
-        profil_age = st.radio(
-            "Votre tranche d'âge :",
-            options=["18–25 ans", "26–35 ans", "36–50 ans", "51 ans et plus"],
-            horizontal=True,
-            key="profil_age"
-        )
-        profil_genre = st.radio(
-            "Votre genre :",
-            options=["Femme", "Homme", "Autre", "Ne souhaite pas répondre"],
-            horizontal=True,
-            key="profil_genre"
-        )
-        profil_achat = st.radio(
-            "Fréquence de vos achats en ligne :",
-            options=["Rare", "Occasionnelle", "Fréquente"],
-            horizontal=True,
-            key="profil_achat"
-        )
-        profil_familiarite = st.radio(
-            "Familiarité avec les chatbots IA (ChatGPT, Claude, etc.) :",
-            options=["Faible", "Moyenne", "Élevée"],
-            horizontal=True,
-            key="profil_familiarite"
-        )
-
-        st.divider()
-        st.caption("Échelle : 1 = Pas du tout d'accord → 5 = Tout à fait d'accord")
 
         # ── SECTION 1 — Anthropomorphisme + Adéquation ──
         st.subheader("Section 1 — Perception de l'assistant")
 
-        ant_1 = likert_item(
-            "1. J'ai l'impression de parler à une personne réelle.",
-            "ant_1"
-        )
-        ant_2 = likert_item(
-            "2. L'assistant me paraît chaleureux.",
-            "ant_2"
-        )
-        ant_3 = likert_item(
-            "3. L'assistant semble avoir des intentions propres.",
-            "ant_3"
-        )
-        adequation_1 = likert_item(
+        ant_1_ep, ant_1_med = likert_pair("1. J'ai l'impression de parler à une personne réelle.", "ant_1_ep", "ant_1_med")
+        ant_2_ep, ant_2_med = likert_pair("2. L'assistant me paraît chaleureux.", "ant_2_ep", "ant_2_med")
+        ant_3_ep, ant_3_med = likert_pair("3. L'assistant semble avoir des intentions propres.", "ant_3_ep", "ant_3_med")
+        adequation_1_ep, adequation_1_med = likert_pair(
             "4. Le style conversationnel de l'assistant me semble adapté à la situation.",
-            "adequation_1"
+            "adequation_1_ep", "adequation_1_med"
         )
 
         st.divider()
 
-        # ── SECTION 2 — Confiance perçue ──
+        # ── SECTION 2 — Confiance ──
         st.subheader("Section 2 — Confiance envers l'assistant")
         st.caption("Échelle : 1 = Pas du tout d'accord → 5 = Tout à fait d'accord")
 
         st.markdown("**Compétence**")
-        trust_ab_1 = likert_item(
-            "1. Le chatbot semble bien connaître les produits qu'il recommande.",
-            "trust_ab_1"
-        )
-        trust_ab_2 = likert_item(
-            "2. Je pense que le chatbot est capable de m'aider à faire de bons choix.",
-            "trust_ab_2"
-        )
-        trust_ab_3 = likert_item(
-            "3. Les recommandations du chatbot me semblent adaptées à ma situation.",
-            "trust_ab_3"
-        )
+        trust_ab_1_ep, trust_ab_1_med = likert_pair("5. Le chatbot semble bien connaître les produits qu'il recommande.", "trust_ab_1_ep", "trust_ab_1_med")
+        trust_ab_2_ep, trust_ab_2_med = likert_pair("6. Je pense que le chatbot est capable de m'aider à faire de bons choix.", "trust_ab_2_ep", "trust_ab_2_med")
+        trust_ab_3_ep, trust_ab_3_med = likert_pair("7. Les recommandations du chatbot me semblent adaptées à ma situation.", "trust_ab_3_ep", "trust_ab_3_med")
 
         st.markdown("**Honnêteté**")
-        trust_in_1 = likert_item(
-            "4. J'ai l'impression que le chatbot me donne des informations fiables.",
-            "trust_in_1"
-        )
-        trust_in_2 = likert_item(
-            "5. Le chatbot ne semble pas chercher à m'induire en erreur.",
-            "trust_in_2"
-        )
-        trust_in_3 = likert_item(
-            "6. Je pense que le chatbot est transparent dans ses recommandations.",
-            "trust_in_3"
-        )
+        trust_in_1_ep, trust_in_1_med = likert_pair("8. J'ai l'impression que le chatbot me donne des informations fiables.", "trust_in_1_ep", "trust_in_1_med")
+        trust_in_2_ep, trust_in_2_med = likert_pair("9. Le chatbot ne semble pas chercher à m'induire en erreur.", "trust_in_2_ep", "trust_in_2_med")
+        trust_in_3_ep, trust_in_3_med = likert_pair("10. Je pense que le chatbot est transparent dans ses recommandations.", "trust_in_3_ep", "trust_in_3_med")
 
         st.markdown("**Bienveillance**")
-        trust_be_1 = likert_item(
-            "7. J'ai le sentiment que le chatbot cherche vraiment à m'aider.",
-            "trust_be_1"
-        )
-        trust_be_2 = likert_item(
-            "8. Le chatbot semble prendre en compte mes besoins avant tout.",
-            "trust_be_2"
-        )
-        trust_be_3 = likert_item(
-            "9. Je me sens bien conseillé(e) par le chatbot.",
-            "trust_be_3"
-        )
-        trust_be_4 = likert_item(
-            "10. Je pense que le chatbot agit dans mon intérêt et non celui de vendeurs.",
-            "trust_be_4"
-        )
+        trust_be_1_ep, trust_be_1_med = likert_pair("11. J'ai le sentiment que le chatbot cherche vraiment à m'aider.", "trust_be_1_ep", "trust_be_1_med")
+        trust_be_2_ep, trust_be_2_med = likert_pair("12. Le chatbot semble prendre en compte mes besoins avant tout.", "trust_be_2_ep", "trust_be_2_med")
+        trust_be_3_ep, trust_be_3_med = likert_pair("13. Je me sens bien conseillé(e) par le chatbot.", "trust_be_3_ep", "trust_be_3_med")
+        trust_be_4_ep, trust_be_4_med = likert_pair("14. Je pense que le chatbot agit dans mon intérêt.", "trust_be_4_ep", "trust_be_4_med")
 
         st.markdown("**Confiance à partager mes informations**")
-        trust_share = likert_item(
-            "11. J'ai facilement partagé mes informations avec le chatbot.",
-            "trust_share"
+        trust_share_ep, trust_share_med = likert_pair(
+            "15. Partager des informations avec l'assistant ne m'a pas fait peur durant l'expérience.",
+            "trust_share_ep", "trust_share_med"
         )
 
         st.divider()
 
         # ── PANIER ──
         st.subheader("Votre expérience")
-        added_to_cart = st.radio(
-            "Avez-vous ajouté des recommandations dans votre panier ?",
-            options=["Oui", "Non"],
-            horizontal=True,
-            key="added_to_cart"
-        )
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("**🍽️ Mission 1 — Épicerie**")
+            added_to_cart_ep = st.radio(
+                "Avez-vous ajouté des recommandations au panier ?",
+                options=["Oui", "Non"],
+                index=None,
+                horizontal=True,
+                key="added_to_cart_ep"
+            )
+        with col2:
+            st.markdown("**🏥 Mission 2 — Médicaments**")
+            added_to_cart_med = st.radio(
+                "Avez-vous ajouté des recommandations au panier ?",
+                options=["Oui", "Non"],
+                index=None,
+                horizontal=True,
+                key="added_to_cart_med"
+            )
 
         st.divider()
-
         submitted = st.form_submit_button("Envoyer mes réponses →", type="primary")
 
         if submitted:
             reponses = {
-                "profil_age": profil_age,
-                "profil_genre": profil_genre,
-                "profil_achat": profil_achat,
-                "profil_familiarite": profil_familiarite,
-                "ant_1": ant_1, "ant_2": ant_2, "ant_3": ant_3,
-                "adequation_1": adequation_1,
-                "trust_ab_1": trust_ab_1, "trust_ab_2": trust_ab_2, "trust_ab_3": trust_ab_3,
-                "trust_in_1": trust_in_1, "trust_in_2": trust_in_2, "trust_in_3": trust_in_3,
-                "trust_be_1": trust_be_1, "trust_be_2": trust_be_2, "trust_be_3": trust_be_3,
-                "trust_be_4": trust_be_4,
-                "trust_share": trust_share,
-                "added_to_cart": added_to_cart,
+                "ant_1_ep": ant_1_ep, "ant_2_ep": ant_2_ep, "ant_3_ep": ant_3_ep, "adequation_1_ep": adequation_1_ep,
+                "trust_ab_1_ep": trust_ab_1_ep, "trust_ab_2_ep": trust_ab_2_ep, "trust_ab_3_ep": trust_ab_3_ep,
+                "trust_in_1_ep": trust_in_1_ep, "trust_in_2_ep": trust_in_2_ep, "trust_in_3_ep": trust_in_3_ep,
+                "trust_be_1_ep": trust_be_1_ep, "trust_be_2_ep": trust_be_2_ep, "trust_be_3_ep": trust_be_3_ep, "trust_be_4_ep": trust_be_4_ep,
+                "trust_share_ep": trust_share_ep, "added_to_cart_ep": added_to_cart_ep,
+                "ant_1_med": ant_1_med, "ant_2_med": ant_2_med, "ant_3_med": ant_3_med, "adequation_1_med": adequation_1_med,
+                "trust_ab_1_med": trust_ab_1_med, "trust_ab_2_med": trust_ab_2_med, "trust_ab_3_med": trust_ab_3_med,
+                "trust_in_1_med": trust_in_1_med, "trust_in_2_med": trust_in_2_med, "trust_in_3_med": trust_in_3_med,
+                "trust_be_1_med": trust_be_1_med, "trust_be_2_med": trust_be_2_med, "trust_be_3_med": trust_be_3_med, "trust_be_4_med": trust_be_4_med,
+                "trust_share_med": trust_share_med, "added_to_cart_med": added_to_cart_med,
             }
             save_questionnaire(st.session_state["conversation_id"], reponses)
             st.session_state["screen"] = "fin"
@@ -763,10 +690,14 @@ screen = st.session_state.get("screen", "profil")
 
 if screen == "profil":
     show_profil_form()
-elif screen == "mission":
-    show_mission()
-elif screen == "chat":
-    show_chat()
+elif screen == "mission_ep":
+    show_mission("epicerie")
+elif screen == "chat_ep":
+    show_chat("epicerie")
+elif screen == "mission_med":
+    show_mission("medicaments")
+elif screen == "chat_med":
+    show_chat("medicaments")
 elif screen == "questionnaire":
     show_questionnaire()
 else:
