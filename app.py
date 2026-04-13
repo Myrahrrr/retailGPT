@@ -109,11 +109,16 @@ def save_questionnaire(conv_id, r):
         "conversation_id": conv_id, **r,
         "timestamp": datetime.now().isoformat()
     }).execute()
-    row = sb.table("participants").select("style").eq("conversation_id", conv_id).single().execute()
-    if row.data:
-        style = row.data["style"]
-        cur = sb.table("condition_counts").select("completed").eq("style", style).single().execute().data["completed"]
-        sb.table("condition_counts").update({"completed": cur + 1}).eq("style", style).execute()
+    try:
+        row = sb.table("participants").select("style").eq("conversation_id", conv_id).execute()
+        if row.data:
+            style = row.data[0]["style"]
+            cur_row = sb.table("condition_counts").select("completed").eq("style", style).execute()
+            if cur_row.data:
+                cur = cur_row.data[0]["completed"]
+                sb.table("condition_counts").update({"completed": cur + 1}).eq("style", style).execute()
+    except Exception:
+        pass
 
 def init_state():
     defaults = {"conv_id":str(uuid.uuid4()),"screen":"p1","style":None,"profil":{},
