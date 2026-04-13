@@ -14,7 +14,7 @@ st.markdown("""<style>
 #MainMenu{visibility:hidden;}footer{visibility:hidden;}
 
 
-.block-container{padding-top:2rem!important;max-width:640px!important;}
+.block-container{padding-top:4rem!important;max-width:640px!important;}
 
 
 
