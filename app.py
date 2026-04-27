@@ -400,6 +400,9 @@ def show_chat(produit):
     for msg in st.session_state[hk]:
         st.chat_message(msg["role"]).write(msg["content"])
 
+    # Ancre invisible pour le scroll auto mobile
+    st.markdown('<div id="chat-bottom-anchor" style="height:1px;"></div>', unsafe_allow_html=True)
+
     # Grand espace entre messages et bouton
     st.markdown("<br><br><br><br><br>", unsafe_allow_html=True)
     st.markdown("<hr>", unsafe_allow_html=True)
@@ -425,6 +428,31 @@ def show_chat(produit):
         with st.spinner(""):
             r = llm(st.session_state[hk], st.session_state["style"], produit)
         st.session_state[hk].append({"role":"assistant","content":r}); st.rerun()
+
+    # ── SCROLL AUTO VERS LE DERNIER MESSAGE (mobile principalement) ──
+    import streamlit.components.v1 as _scroll_comp
+    nb_msgs = len(st.session_state.get(hk, []))
+    _scroll_comp.html(f"""
+    <script>
+      (function() {{
+        const token = "{produit}-{nb_msgs}";
+        function scrollToBottom() {{
+          try {{
+            const doc = window.parent.document;
+            const anchor = doc.getElementById('chat-bottom-anchor');
+            if (anchor) {{
+              anchor.scrollIntoView({{ behavior: 'smooth', block: 'end' }});
+            }} else {{
+              window.parent.scrollTo({{ top: doc.body.scrollHeight, behavior: 'smooth' }});
+            }}
+          }} catch (e) {{ console.log('scroll error', e); }}
+        }}
+        setTimeout(scrollToBottom, 100);
+        setTimeout(scrollToBottom, 400);
+        setTimeout(scrollToBottom, 800);
+      }})();
+    </script>
+    """, height=0)
 
 # ── QUESTIONNAIRE HTML ──
 QUESTIONS = [
@@ -551,25 +579,25 @@ div[data-testid="stRadio"] > div[role="radiogroup"] > label > div:first-child {
 
 # ── FIN ──
 def show_fin():
-    st.markdown("""<div style="text-align:center;padding:3rem 0 2rem;">
+    st.markdown("""<div style="text-align:center;padding:3rem 0 1.5rem;">
       <div style="width:48px;height:48px;border-radius:50%;background:#f5f5f4;border:0.5px solid #e0deda;display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 11L9 16L18 6" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
-      <h2 style="font-size:20px;font-weight:500;margin-bottom:0.5rem;">Merci pour votre participation !</h2>
-      <p style="color:#666;font-size:15px;line-height:1.65;">Vos réponses ont bien été enregistrées. Elles resteront strictement anonymes et seront utilisées uniquement dans le cadre de cette recherche académique.</p>
-      <p style="color:#666;font-size:15px;line-height:1.65;margin-top:1rem;">Votre contribution est précieuse et contribue directement à l'avancement de cette étude.</p>
-      <p style="color:#666;font-size:15px;line-height:1.65;margin-top:1rem;">Merci pour votre temps et votre aide.</p>
-      <p style="color:#888;font-size:14px;margin-top:0.5rem;font-style:italic;">— Myrah</p>
+      <h2 style="font-size:20px;font-weight:500;margin-bottom:0.5rem;">Merci pour votre contribution à cette recherche !</h2>
+      <p style="color:#666;font-size:15px;line-height:1.65;">Vos réponses ont bien été enregistrées et resteront strictement anonymes.</p>
+      <p style="color:#888;font-size:14px;margin-top:0.75rem;font-style:italic;">— Myrah</p>
     </div>""", unsafe_allow_html=True)
 
     # ── BLOC NOTIFICATION RÉSULTATS ──
     if not st.session_state.get("email_submitted", False):
         st.markdown("""
-        <div style="background:#f5f5f4;border:0.5px solid #e0deda;border-radius:12px;padding:1.5rem;margin-top:1rem;">
-          <p style="font-size:14px;color:#1a1a1a;font-weight:500;margin-bottom:0.4rem;text-align:center;">📬 Souhaitez-vous être informé(e) des résultats ?</p>
-          <p style="font-size:13px;color:#666;line-height:1.55;margin-bottom:1rem;text-align:center;">
-            Laissez-moi votre adresse email et je vous enverrai un résumé des conclusions du mémoire une fois la recherche terminée.<br>
-            <span style="font-size:12px;color:#888;">Votre email ne sera utilisé que dans ce cadre, jamais partagé, et restera dissocié de vos réponses anonymes.</span>
+        <div style="background:#f5f5f4;border:0.5px solid #e0deda;border-radius:12px;padding:1.25rem;margin-top:1rem;">
+          <p style="font-size:14px;color:#1a1a1a;font-weight:500;margin-bottom:0.3rem;text-align:center;">📬 Recevoir les résultats</p>
+          <p style="font-size:13px;color:#666;line-height:1.5;margin-bottom:0.4rem;text-align:center;">
+            Laissez votre email pour recevoir un résumé du mémoire.
+          </p>
+          <p style="font-size:12px;color:#888;line-height:1.5;margin-bottom:0.9rem;text-align:center;">
+            Votre email ne sera utilisé que dans ce cadre, jamais partagé, et restera dissocié de vos réponses anonymes.
           </p>
         </div>
         """, unsafe_allow_html=True)
@@ -580,7 +608,6 @@ def show_fin():
         with col2:
             if st.button("Me prévenir", key="notify_btn", use_container_width=True):
                 email_clean = (email_input or "").strip().lower()
-                # Validation basique
                 if "@" not in email_clean or "." not in email_clean or len(email_clean) < 5:
                     st.error("Email invalide")
                 else:
@@ -589,7 +616,6 @@ def show_fin():
                         st.session_state["email_submitted"] = True
                         st.rerun()
                     except Exception as e:
-                        # Gérer le cas doublon (unique constraint) silencieusement
                         if "duplicate" in str(e).lower() or "unique" in str(e).lower() or "23505" in str(e):
                             st.session_state["email_submitted"] = True
                             st.rerun()
@@ -597,8 +623,8 @@ def show_fin():
                             st.error("Erreur, veuillez réessayer.")
     else:
         st.markdown("""
-        <div style="background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:12px;padding:1.5rem;margin-top:1rem;text-align:center;">
-          <p style="font-size:14px;color:#085041;font-weight:500;margin:0;">✓ Merci ! Vous serez prévenu(e) dès que les résultats seront disponibles.</p>
+        <div style="background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:12px;padding:1rem;margin-top:1rem;text-align:center;">
+          <p style="font-size:14px;color:#085041;font-weight:500;margin:0;">✓ Vous serez prévenu(e) dès la fin de l'étude.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -615,12 +641,8 @@ def show_fin():
     mail = f"mailto:?subject={urllib.parse.quote('Étude mémoire — assistants IA')}&body={msg_enc}"
 
     st.markdown(f"""
-    <div style="background:#f5f5f4;border:0.5px solid #e0deda;border-radius:12px;padding:1.5rem;margin-top:1rem;">
-      <p style="font-size:14px;color:#1a1a1a;font-weight:500;margin-bottom:0.4rem;text-align:center;">Aidez-moi à faire connaître cette étude 💛</p>
-      <p style="font-size:13px;color:#666;line-height:1.55;margin-bottom:1.2rem;text-align:center;">
-        Chaque participation compte. Si vous connaissez des personnes susceptibles d'être intéressées, n'hésitez pas à leur partager cette étude.<br>
-        Votre soutien est essentiel pour la réussite de cette recherche.
-      </p>
+    <div style="background:#f5f5f4;border:0.5px solid #e0deda;border-radius:12px;padding:1.25rem;margin-top:1rem;">
+      <p style="font-size:14px;color:#1a1a1a;font-weight:500;margin-bottom:1rem;text-align:center;">Aidez-moi à faire connaître cette étude 💛</p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
         <a href="{wa}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25D366;color:white;text-decoration:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
