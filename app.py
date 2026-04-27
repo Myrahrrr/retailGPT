@@ -5,7 +5,7 @@ from openai import OpenAI
 from supabase import create_client
 from prompts import get_system_prompt
 
-st.set_page_config(page_title="Assistant en ligne", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title=" L'IA, ce nouveau conseiller d'achat", layout="centered", initial_sidebar_state="collapsed")
 
 # CSS exact des fichiers HTML + fond blanc forcé + badges colorés
 st.markdown("""<style>
