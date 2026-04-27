@@ -556,10 +556,51 @@ def show_fin():
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 11L9 16L18 6" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <h2 style="font-size:20px;font-weight:500;margin-bottom:0.5rem;">Merci pour votre participation !</h2>
-      <p style="color:#666;font-size:15px;line-height:1.65;">Vos réponses ont bien été enregistrées.<br>Vos données sont anonymes et utilisées uniquement à des fins de recherche académique.</p>
-      <p style="color:#666;font-size:15px;line-height:1.65;margin-top:1rem;">Merci pour votre contribution.</p>
+      <p style="color:#666;font-size:15px;line-height:1.65;">Vos réponses ont bien été enregistrées. Elles resteront strictement anonymes et seront utilisées uniquement dans le cadre de cette recherche académique.</p>
+      <p style="color:#666;font-size:15px;line-height:1.65;margin-top:1rem;">Votre contribution est précieuse et contribue directement à l'avancement de cette étude.</p>
+      <p style="color:#666;font-size:15px;line-height:1.65;margin-top:1rem;">Merci pour votre temps et votre aide.</p>
       <p style="color:#888;font-size:14px;margin-top:0.5rem;font-style:italic;">— Myrah</p>
     </div>""", unsafe_allow_html=True)
+
+    # ── BLOC NOTIFICATION RÉSULTATS ──
+    if not st.session_state.get("email_submitted", False):
+        st.markdown("""
+        <div style="background:#f5f5f4;border:0.5px solid #e0deda;border-radius:12px;padding:1.5rem;margin-top:1rem;">
+          <p style="font-size:14px;color:#1a1a1a;font-weight:500;margin-bottom:0.4rem;text-align:center;">📬 Souhaitez-vous être informé(e) des résultats ?</p>
+          <p style="font-size:13px;color:#666;line-height:1.55;margin-bottom:1rem;text-align:center;">
+            Laissez-moi votre adresse email et je vous enverrai un résumé des conclusions du mémoire une fois la recherche terminée.<br>
+            <span style="font-size:12px;color:#888;">Votre email ne sera utilisé que dans ce cadre, jamais partagé, et restera dissocié de vos réponses anonymes.</span>
+          </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        col1, col2 = st.columns([3, 1])
+        with col1:
+            email_input = st.text_input("Votre email", key="notify_email_input", label_visibility="collapsed", placeholder="votre@email.com")
+        with col2:
+            if st.button("Me prévenir", key="notify_btn", use_container_width=True):
+                email_clean = (email_input or "").strip().lower()
+                # Validation basique
+                if "@" not in email_clean or "." not in email_clean or len(email_clean) < 5:
+                    st.error("Email invalide")
+                else:
+                    try:
+                        sb.table("notify_emails").insert({"email": email_clean}).execute()
+                        st.session_state["email_submitted"] = True
+                        st.rerun()
+                    except Exception as e:
+                        # Gérer le cas doublon (unique constraint) silencieusement
+                        if "duplicate" in str(e).lower() or "unique" in str(e).lower() or "23505" in str(e):
+                            st.session_state["email_submitted"] = True
+                            st.rerun()
+                        else:
+                            st.error("Erreur, veuillez réessayer.")
+    else:
+        st.markdown("""
+        <div style="background:#E1F5EE;border:0.5px solid #5DCAA5;border-radius:12px;padding:1.5rem;margin-top:1rem;text-align:center;">
+          <p style="font-size:14px;color:#085041;font-weight:500;margin:0;">✓ Merci ! Vous serez prévenu(e) dès que les résultats seront disponibles.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
     # ── BLOC PARTAGE ──
     import urllib.parse
@@ -575,9 +616,10 @@ def show_fin():
 
     st.markdown(f"""
     <div style="background:#f5f5f4;border:0.5px solid #e0deda;border-radius:12px;padding:1.5rem;margin-top:1rem;">
-      <p style="font-size:14px;color:#1a1a1a;font-weight:500;margin-bottom:0.4rem;text-align:center;">Aidez-moi en partageant l'étude 💛</p>
+      <p style="font-size:14px;color:#1a1a1a;font-weight:500;margin-bottom:0.4rem;text-align:center;">Aidez-moi à faire connaître cette étude 💛</p>
       <p style="font-size:13px;color:#666;line-height:1.55;margin-bottom:1.2rem;text-align:center;">
-        Chaque participant compte. Si vous connaissez des personnes susceptibles d'aider, partagez-leur le lien — merci !
+        Chaque participation compte. Si vous connaissez des personnes susceptibles d'être intéressées, n'hésitez pas à leur partager cette étude.<br>
+        Votre soutien est essentiel pour la réussite de cette recherche.
       </p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
         <a href="{wa}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#25D366;color:white;text-decoration:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:500;">
@@ -600,12 +642,12 @@ def show_fin():
     </div>
     """, unsafe_allow_html=True)
 
-    # Bouton copier (pour Instagram, SMS, etc.)
+    # ── BOUTONS COPIER + WEB SHARE API (mobile) ──
     import streamlit.components.v1 as components
-    copy_text = (msg + " " + url).replace("'", "\\'")
+    copy_text = (msg + " " + url).replace("'", "\\'").replace('"', '\\"')
     components.html(f"""
-    <div style="text-align:center;margin-top:0.8rem;">
-      <button onclick="
+    <div style="text-align:center;margin-top:0.8rem;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;font-family:system-ui,-apple-system,sans-serif;">
+      <button id="btn-copy" onclick="
         var t=document.createElement('textarea');
         t.value='{copy_text}';
         document.body.appendChild(t);t.select();
@@ -614,11 +656,24 @@ def show_fin():
         this.innerText='✓ Lien copié !';
         this.style.background='#1D9E75';this.style.color='white';this.style.borderColor='#1D9E75';
         setTimeout(()=>{{this.innerText='📋 Copier le lien'; this.style.background='white';this.style.color='#1a1a1a';this.style.borderColor='#e0deda';}},2000);
-      " style="background:white;border:0.5px solid #e0deda;border-radius:8px;padding:9px 18px;font-size:13px;color:#1a1a1a;cursor:pointer;font-family:system-ui,-apple-system,sans-serif;">
+      " style="background:white;border:0.5px solid #e0deda;border-radius:8px;padding:9px 18px;font-size:13px;color:#1a1a1a;cursor:pointer;font-family:inherit;">
         📋 Copier le lien
       </button>
+      <button id="btn-share" style="display:none;background:white;border:0.5px solid #e0deda;border-radius:8px;padding:9px 18px;font-size:13px;color:#1a1a1a;cursor:pointer;font-family:inherit;" onclick="
+        navigator.share({{
+          title: 'Étude assistants IA',
+          text: '{copy_text}',
+        }}).catch(function(err){{ console.log('Partage annulé', err); }});
+      ">
+        📤 Partager (Instagram, etc.)
+      </button>
     </div>
-    """, height=60)
+    <script>
+      if (navigator.share) {{
+        document.getElementById('btn-share').style.display = 'inline-flex';
+      }}
+    </script>
+    """, height=70)
 
 # ── ADMIN ──
 def show_admin():
