@@ -631,7 +631,7 @@ def show_fin():
     # ── BLOC PARTAGE ──
     import urllib.parse
     url = "https://assistant-achat.streamlit.app"
-    msg = "Salut ! J'ai participé à une étude sur les assistants d'achat IA pour un mémoire de recherche à Paris 1 Sorbonne. Ça prend 8-10 min, c'est anonyme, et ça aide vraiment. Tu veux bien y participer ?"
+    msg = "Hello ! Je viens de tester une étude sur la confiance qu'on accorde aux assistants d'achat IA (style ChatGPT). C'est pour un mémoire de recherche académique, anonyme, 8-10 min. Ta participation aiderait énormément à faire avancer la recherche ?"
     msg_enc = urllib.parse.quote(msg + " " + url)
     url_enc = urllib.parse.quote(url)
 
