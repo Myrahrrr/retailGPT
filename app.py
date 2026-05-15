@@ -632,7 +632,7 @@ def show_fin():
     st.markdown("""
     <div style="background:#E8F4FB;border:0.5px solid #B6DCEF;border-radius:12px;padding:1rem;margin-top:1.25rem;text-align:center;">
       <p style="font-size:14px;color:#0B5A82;margin:0;line-height:1.5;">
-        Pour les membres du surveycircle, vous pouvez utiliser le Survey Code suivant sur <a href="https://www.surveycircle.com" target="_blank" rel="noopener" style="color:#0B5A82;font-weight:600;">www.surveycircle.com</a> et obtiens gratuitement des participants pour ton étude grâce à SurveyCircle :<br>
+        Pour les membres du surveycircle, vous pouvez utiliser le Survey Code suivant sur <a href="https://www.surveycircle.com" target="_blank" rel="noopener" style="color:#0B5A82;font-weight:600;">www.surveycircle.com</a> et obtenez gratuitement des participants pour votre étude grâce à SurveyCircle :<br>
         <strong style="font-size:18px;letter-spacing:1px;display:inline-block;margin-top:0.5rem;">S2G1-YQZL-64U7-NU49</strong>
       </p>
     </div>
